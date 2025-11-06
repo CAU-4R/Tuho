@@ -1,10 +1,14 @@
 using Niantic.Lightship.SharedAR.Colocalization;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace CAU4R.Tuho.AR
 {
     public class ImageColocalizationManager : MonoBehaviour
     {
+        public UnityEvent OnTrackingBegin;
+        public UnityEvent OnTrackingEnd;
+        
         [SerializeField]
         private SharedSpaceManager _sharedSpaceManager;
         
@@ -23,12 +27,35 @@ namespace CAU4R.Tuho.AR
         [SerializeField]
         private string _roomDescription = "Demo Room Description";
 
+        private void Start()
+        {
+            _sharedSpaceManager.sharedSpaceManagerStateChanged += OnColocalizationTrackingStateChanged;
+        }
+
+        public void SetTargetImage(Texture2D image, float targetImageSize)
+        {
+            _targetImage = image;
+            _targetImageSize = targetImageSize;
+        }
+        
         public void StartSharedSpace()
         {
             var imageTrackingOptions = ISharedSpaceTrackingOptions.CreateImageTrackingOptions(_targetImage, _targetImageSize);
             var roomOptions = ISharedSpaceRoomOptions.CreateLightshipRoomOptions(_roomName, _roomCapacity, _roomDescription);
             
             _sharedSpaceManager.StartSharedSpace(imageTrackingOptions, roomOptions);
+        }
+
+        private void OnColocalizationTrackingStateChanged(SharedSpaceManager.SharedSpaceManagerStateChangeEventArgs args)
+        {
+            if (args.Tracking)
+            {
+                OnTrackingBegin?.Invoke();
+            }
+            else
+            {
+                OnTrackingEnd?.Invoke();
+            }
         }
     }
 }
