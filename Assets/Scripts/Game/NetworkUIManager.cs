@@ -3,9 +3,13 @@ using System.Linq;
 using Unity.Netcode;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NetworkUIManager : NetworkBehaviour
 {
+    [Header("UI Buttons")]
+    [SerializeField] private Button scoreButton;
+
     [Header("Score UI")]
     [SerializeField] private TMP_Text scoreText;
     [SerializeField] private GameObject successTextObject;
@@ -28,6 +32,9 @@ public class NetworkUIManager : NetworkBehaviour
         if (AllPlayerDataManager.Instance != null)
             AllPlayerDataManager.Instance.OnPlayerScoreChanged += HandlePlayerScoreChanged;
 
+        if (scoreButton != null)
+            scoreButton.onClick.AddListener(OnScoreButtonClicked);
+        
         if (AllPlayerDataManager.Instance != null)
             AllPlayerDataManager.Instance.OnPlayerDead += HandlePlayerDead;
     }
@@ -158,6 +165,31 @@ public class NetworkUIManager : NetworkBehaviour
             AllPlayerDataManager.Instance.OnPlayerDead -= HandlePlayerDead;
         }
     }
+
+    [Header("Score Control")]
+    [SerializeField] private int scorePerClick = 1;
+
+    // 버튼에서 호출
+    public void OnScoreButtonClicked()
+    {
+        if (IsServer)
+        {
+            // 서버라면 바로 점수 증가
+            AllPlayerDataManager.Instance.IncreaseScore(NetworkManager.Singleton.LocalClientId, scorePerClick);
+        }
+        else
+        {
+            // 클라이언트라면 서버 RPC 호출
+            RequestIncreaseScoreServerRpc(NetworkManager.Singleton.LocalClientId, scorePerClick);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestIncreaseScoreServerRpc(ulong clientId, int amount)
+    {
+        AllPlayerDataManager.Instance.IncreaseScore(clientId, amount);
+    }
+
 
     #endregion
 }
