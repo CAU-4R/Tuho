@@ -2,14 +2,7 @@ using UnityEngine;
 
 public class ScoreDetector : MonoBehaviour
 {
-    private UIManager uiManager;
-    private int score = 0;
-
-    // 게임이 시작될 때 UIManager를 한 번만 찾아둡니다.
-    void Start()
-    {
-        uiManager = FindAnyObjectByType<UIManager>();
-    }
+    private bool hasScored = false;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -20,13 +13,15 @@ public class ScoreDetector : MonoBehaviour
             {
                 arrow.hasScored = true;
 
-                // 점수를 올리고 UI 업데이트를 요청합니다.
-                score++;
-                if (uiManager != null)
+                // 서버에 점수 올리기 요청
+                if (AllPlayerDataManager.Instance != null)
                 {
-                    uiManager.UpdateScore(score);
-                    uiManager.ShowSuccessMessage();
+                    // arrow.ownerClientId 같은 ID를 ArrowState에서 가지고 있다고 가정
+                    ulong playerId = arrow.ownerClientId;
+                    AllPlayerDataManager.Instance.AddScoreServerRpc(playerId, 1);
                 }
+
+                // 성공 메시지는 NetworkUIManager에서 이벤트로 처리됨
             }
         }
     }

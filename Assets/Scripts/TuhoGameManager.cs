@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 
 public class TuhoGameManager : MonoBehaviour
 {
@@ -126,6 +127,13 @@ public class TuhoGameManager : MonoBehaviour
 
         // 3. 생성(Instantiate)하는 바로 그 순간에 올바른 위치와 '회전값'을 함께 적용합니다.
         GameObject arrow = Instantiate(arrowPrefab, arrowSpawnPoint.position, initialRotation);
+        ArrowState arrowState = arrow.GetComponent<ArrowState>();
+
+        if (arrowState != null)
+        {
+            arrowState.ownerClientId = NetworkManager.Singleton.LocalClientId;
+        }
+
         Rigidbody arrowRb = arrow.GetComponent<Rigidbody>();
 
         // 4. 이제 마지막으로 힘을 가합니다.

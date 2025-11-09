@@ -3,4 +3,5 @@
 public class ArrowState : MonoBehaviour
 {
     public bool hasScored = false;
+    public ulong ownerClientId;
 }
