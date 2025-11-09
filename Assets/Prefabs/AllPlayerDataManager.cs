@@ -31,7 +31,7 @@ public class AllPlayerDataManager : NetworkBehaviour
         {
             AddNewClientToList(NetworkManager.LocalClientId);
         }
-
+        allPlayerData.OnListChanged += HandleAllPlayerDataChanged;
         NetworkManager.Singleton.OnClientConnectedCallback += AddNewClientToList;
     }
 
@@ -39,7 +39,16 @@ public class AllPlayerDataManager : NetworkBehaviour
     {
         if (NetworkManager.Singleton != null)
             NetworkManager.Singleton.OnClientConnectedCallback -= AddNewClientToList;
+
+        allPlayerData.OnListChanged -= HandleAllPlayerDataChanged;
     }
+    
+
+    private void HandleAllPlayerDataChanged(NetworkListEvent<PlayerData> changeEvent)
+    {
+        // 클라이언트 UI 갱신
+        OnPlayerScoreChanged?.Invoke(changeEvent.Value.clientID);
+    }   
 
     private void AddNewClientToList(ulong clientID)
     {
