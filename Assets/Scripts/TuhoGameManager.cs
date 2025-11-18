@@ -27,8 +27,7 @@ public class TuhoGameManager : NetworkBehaviour
 
     void Update()
     {
-        if (!IsOwner) return;    // 🔵 각 플레이어 자신의 화면에서만 입력 처리
-
+        // 🔥 기존의 "if (!IsOwner) return" 제거 — 모든 플레이어가 입력 가능해야 함
         if (Pointer.current == null) return;
 
         if (currentState == GameState.PlacingPot)
@@ -53,19 +52,18 @@ public class TuhoGameManager : NetworkBehaviour
         {
             Quaternion hitRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
-            // 🔵 로컬에서 만들지 말고 서버에 요청
+            // 🔥 Pot 은 소유권 필요 없음 → 서버가 생성 후 모든 클라이언트에 동기화
             SpawnPotServerRpc(hit.point, hitRotation);
 
             currentState = GameState.ReadyToThrow;
         }
     }
 
-    // 🔵 서버가 Pot 생성 후 Spawn()함
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     void SpawnPotServerRpc(Vector3 pos, Quaternion rot)
     {
         GameObject pot = Instantiate(potPrefab, pos, rot);
-        pot.GetComponent<NetworkObject>().Spawn();
+        pot.GetComponent<NetworkObject>().Spawn(); // 🔥 그냥 Spawn() — 서버 소유
     }
 
     void HandleThrowing()
@@ -90,27 +88,44 @@ public class TuhoGameManager : NetworkBehaviour
     {
         Vector2 swipeVector = endScreenPos - startScreenPos;
 
-        Vector3 horizontalDir = mainCamera.transform.right * swipeVector.x + mainCamera.transform.forward * swipeVector.y;
+        Vector3 horizontalDir =
+            mainCamera.transform.right * swipeVector.x +
+            mainCamera.transform.forward * swipeVector.y;
+
         horizontalDir.y = 0;
         float swipeMagnitude = swipeVector.magnitude;
-        Vector3 finalDirection = (horizontalDir.normalized + Vector3.up * 1.5f).normalized;
 
+        Vector3 finalDirection = (horizontalDir.normalized + Vector3.up * 1.5f).normalized;
         Quaternion initialRotation = Quaternion.LookRotation(finalDirection);
 
-        // 🔵 화살 생성도 로컬에서 직접 Instantiate 하면 안 됨
-        SpawnArrowServerRpc(arrowSpawnPoint.position, initialRotation, finalDirection, swipeMagnitude, NetworkManager.Singleton.LocalClientId);
+        // 🔥 모든 클라이언트가 Arrow 생성 요청 가능
+        SpawnArrowServerRpc(
+            arrowSpawnPoint.position,
+            initialRotation,
+            finalDirection,
+            swipeMagnitude
+        );
     }
 
-
-    // 🔵 서버가 Arrow 생성해서 Spawn()하고 힘도 서버에서 적용
-    [ServerRpc]
-    void SpawnArrowServerRpc(Vector3 pos, Quaternion rot, Vector3 direction, float magnitude, ulong ownerId)
+    [ServerRpc(RequireOwnership = false)]
+    void SpawnArrowServerRpc(
+        Vector3 pos,
+        Quaternion rot,
+        Vector3 direction,
+        float magnitude,
+        ServerRpcParams rpcParams = default
+    )
     {
+        // 🔥 서버가 화살 생성
         GameObject arrow = Instantiate(arrowPrefab, pos, rot);
+
         NetworkObject netObj = arrow.GetComponent<NetworkObject>();
 
-        netObj.SpawnWithOwnership(ownerId);
+        // 🔥 SpawnWithOwnership() 금지
+        //    → 사용하면 owner 클라이언트 외에는 안 보이는 버그 발생함
+        netObj.Spawn();  // 서버 소유, 전 클라이언트 동기화
 
+        // 🔥 서버에서 물리 힘 적용 → 모든 클라이언트 동일하게 반영
         Rigidbody rb = arrow.GetComponent<Rigidbody>();
         rb.AddForce(direction * magnitude * throwForceMultiplier, ForceMode.Impulse);
     }
