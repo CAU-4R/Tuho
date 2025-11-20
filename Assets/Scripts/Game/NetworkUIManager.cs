@@ -78,13 +78,17 @@ public class NetworkUIManager : NetworkBehaviour
 
     private void HandlePlayerScoreChanged(ulong clientId)
     {
-        var allScores = AllPlayerDataManager.Instance.GetAllScores();
-        if (scoreText != null)
-        {
-            scoreText.text = string.Join("\n", allScores.Select(kvp => $"Player {kvp.Key}: {kvp.Value}"));
-        }
-        ShowSuccessMessage();
+        UpdateScoreUI();
     }
+
+    private void UpdateScoreUI()
+    {
+        if (scoreText == null) return;
+
+        var allScores = AllPlayerDataManager.Instance.GetAllScores();
+        scoreText.text = string.Join("\n", allScores.Select(kvp => $"Player {kvp.Key}: {kvp.Value}"));
+    }
+
 
     public void ShowSuccessMessage()
     {
@@ -98,7 +102,7 @@ public class NetworkUIManager : NetworkBehaviour
     private void ShowSuccessMessageServerRpc() => ShowSuccessMessageClientRpc();
 
     [ClientRpc]
-    private void ShowSuccessMessageClientRpc()
+    public void ShowSuccessMessageClientRpc()
     {
         if (successTextObject != null)
             StartCoroutine(ShowAndHideSuccessText());

@@ -1,28 +1,33 @@
-// using UnityEngine;
+using UnityEngine;
+using Unity.Netcode;
 
-// public class ScoreDetector : MonoBehaviour
-// {
-//     private bool hasScored = false;
+public class ScoreDetector : NetworkBehaviour
+{
+    private void OnTriggerEnter(Collider other)
+    {
+        // 충돌 판정은 반드시 서버만 한다
+        if (!IsServer) return;
 
-//     private void OnTriggerEnter(Collider other)
-//     {
-//         if (other.CompareTag("Arrow"))
-//         {
-//             ArrowState arrow = other.GetComponent<ArrowState>();
-//             if (arrow != null && !arrow.hasScored)
-//             {
-//                 arrow.hasScored = true;
+        if (other.CompareTag("Arrow"))
+        {
+            ArrowState arrow = other.GetComponent<ArrowState>();
 
-//                 // 서버에 점수 올리기 요청
-//                 if (AllPlayerDataManager.Instance != null)
-//                 {
-//                     // arrow.ownerClientId 같은 ID를 ArrowState에서 가지고 있다고 가정
-//                     ulong playerId = arrow.ownerClientId;
-//                     AllPlayerDataManager.Instance.AddScoreServerRpc(playerId, 1);
-//                 }
+            if (arrow == null) return;
+            if (arrow.hasScored) return;  // 중복 점수 방지
 
-//                 // 성공 메시지는 NetworkUIManager에서 이벤트로 처리됨
-//             }
-//         }
-//     }
-// }
+            arrow.hasScored = true;
+
+            ulong playerId = arrow.ownerClientId;
+
+            // 점수 증가
+            AllPlayerDataManager.Instance.AddScoreServerRpc(playerId, 1);
+
+            // 성공 메시지 띄우기 (서버에서 → 모든 클라이언트)
+            NetworkUIManager uiManager = FindObjectOfType<NetworkUIManager>();
+            if (uiManager != null)
+            {
+                uiManager.ShowSuccessMessageClientRpc();
+            }
+        }
+    }
+}
