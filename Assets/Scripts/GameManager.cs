@@ -46,11 +46,17 @@ public class GameManager : NetworkBehaviour
     {
         // 서버가 아니면 즉시 종료
         if (!IsServer) return;
-
         if (isPotPlaced.Value) return;
 
-        GameObject spawnedPot = Instantiate(tuhoPotPrefab, position, rotation);
-        spawnedPot.GetComponent<NetworkObject>().Spawn(true);
+        GameObject pot = Instantiate(potPrefab, position, rotation);
+
+        float randomXY = Random.Range(0.18f, 0.25f); 
+        float randomZ = Random.Range(0.14f, 0.22f);  
+
+        pot.transform.localScale = new Vector3(randomXY, randomXY, randomZ);
+
+        pot.GetComponent<NetworkObject>().Spawn();
+
         isPotPlaced.Value = true;
     }
 
