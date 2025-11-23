@@ -1,5 +1,6 @@
 // GameManager.cs
 using Unity.Netcode;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class GameManager : NetworkBehaviour
@@ -55,12 +56,22 @@ public class GameManager : NetworkBehaviour
     }
 
     // 이 함수도 오직 서버(호스트)에서만 호출되어야 합니다.
-    public void SpawnArrow(Vector3 position, Quaternion rotation, Vector3 force)
+    // 매개변수에 clientId 추가
+    public void SpawnArrow(ulong clientId, Vector3 position, Quaternion rotation, Vector3 force)
     {
         if (!IsServer) return;
 
         GameObject arrow = Instantiate(tuhoArrowPrefab, position, rotation);
-        arrow.GetComponent<NetworkObject>().Spawn(true);
+        NetworkObject netObj = arrow.GetComponent<NetworkObject>();
+        netObj.Spawn(true);
+
+        // 화살 주인 ID 설정
+        ArrowState state = arrow.GetComponent<ArrowState>();
+        if (state != null)
+        {
+            state.ownerClientId.Value = clientId;
+        }
+
         arrow.GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
     }
 }
