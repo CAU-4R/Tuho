@@ -14,6 +14,9 @@ namespace CAU4R.Tuho.AR
         [SerializeField]
         private ARCameraBackground _cameraBackground;
 
+        private Texture2D _cameraTexture;
+        private bool _textureReady = false;
+
         public void Blit()
         {
             var commandBuffer = new CommandBuffer();
@@ -45,11 +48,36 @@ namespace CAU4R.Tuho.AR
             
             var newWidth = Screen.width;
             var newHeight = Screen.height;
+
+            if (currentWidth != newWidth || currentHeight != newHeight)
+            {
+                if (_renderTexture != null)
+                {
+                    _renderTexture.Release();
+                }
+                _renderTexture.width = newWidth;
+                _renderTexture.height = newHeight;
+                _renderTexture.depth = 24;
+
+                _renderTexture.Create();
+            }
         }
 
         private void CopyRenderTextureTo2DTexture()
         {
+            if (_cameraTexture == null || _cameraTexture.width != _renderTexture.width ||
+                _cameraTexture.height != _renderTexture.height)
+            {
+                _cameraTexture = new Texture2D(_renderTexture.width, _renderTexture.height, TextureFormat.RGBA32, false);
+            }
             
+            RenderTexture.active = _renderTexture;
+            
+            _cameraTexture.ReadPixels(new Rect(0, 0, _renderTexture.width, _renderTexture.height), 0, 0);
+            _cameraTexture.name = "SCAN_IMG";
+            _cameraTexture.Apply();
+            
+            RenderTexture.active = null;
         }
     }
 }
