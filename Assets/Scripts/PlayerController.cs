@@ -176,9 +176,12 @@ public class PlayerController : NetworkBehaviour
 
     // 클라이언트가 서버에게 화살 던지기를 요청하는 함수
     [ServerRpc]
-    private void RequestArrowThrowServerRpc(Vector3 position, Quaternion rotation, Vector3 force)
+    private void RequestArrowThrowServerRpc(Vector3 position, Quaternion rotation, Vector3 force, ServerRpcParams rpcParams = default)
     {
-        // 이 코드도 서버(호스트)에서만 실행됩니다.
-        GameManager.Instance.SpawnArrow(position, rotation, force);
+        // rpcParams.Receive.SenderClientId를 통해 누가 요청했는지 서버는 정확히 알 수 있습니다.
+        ulong shooterId = rpcParams.Receive.SenderClientId;
+
+        // GameManager에게 쏜 사람(shooterId) 정보를 함께 전달합니다.
+        GameManager.Instance.SpawnArrow(shooterId, position, rotation, force);
     }
 }
