@@ -16,7 +16,7 @@ namespace CAU4R.Tuho.AR
         private Texture2D _targetImage;
 
         [SerializeField]
-        private float _targetImageSize = 0.1f;
+        private float _targetImageSize = 0.5f;
 
         [SerializeField]
         private string _roomName = "DemoRoom";
@@ -32,10 +32,14 @@ namespace CAU4R.Tuho.AR
             _sharedSpaceManager.sharedSpaceManagerStateChanged += OnColocalizationTrackingStateChanged;
         }
 
-        public void SetTargetImage(Texture2D image, float targetImageSize)
+        public void SetTargetImage(Texture2D image)
         {
             _targetImage = image;
-            _targetImageSize = targetImageSize;
+        }
+
+        public void SetTargetImageSize(float size)
+        {
+            _targetImageSize = size;
         }
         
         public void StartSharedSpace()

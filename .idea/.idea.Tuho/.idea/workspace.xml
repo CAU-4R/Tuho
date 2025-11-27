@@ -5,9 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8cb77856-8eb0-45c0-9bbb-79d3d75f9962" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.Tuho/.idea/projectSettingsUpdater.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.Tuho/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/AR/ImageBlit.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/AR/ImageBlit.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Tuho/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Tuho/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/featureARScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/featureARScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/AR/ImageBlit.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/AR/ImageBlit.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/AR/ImageColocalizationBlit.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/AR/ImageColocalizationBlit.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/AR/ImageColocalizationManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/AR/ImageColocalizationManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/7488526.jpg.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Textures/7488526.jpg.meta" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,8 +23,11 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/AR/ARCameraCPUCapture.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/AR/ARCameraGPUBlit.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/AR/ImageColocalizationBlit.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Particle/ParticleEmitter.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Shaders/AR/BlitRotate.shader" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
@@ -40,6 +48,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.C#&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -110,7 +119,11 @@
       <workItem from="1763630612817" duration="4123000" />
       <workItem from="1763641872460" duration="656000" />
       <workItem from="1763874156437" duration="1989000" />
-      <workItem from="1763979259546" duration="4579000" />
+      <workItem from="1763979259546" duration="5817000" />
+      <workItem from="1764082272608" duration="2865000" />
+      <workItem from="1764138452252" duration="2632000" />
+      <workItem from="1764174501634" duration="4744000" />
+      <workItem from="1764226569293" duration="1338000" />
     </task>
     <servers />
   </component>
