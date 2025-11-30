@@ -1354,8 +1354,8 @@ GameObject:
   - component: {fileID: 551660365}
   - component: {fileID: 551660364}
   - component: {fileID: 551660363}
-  - component: {fileID: 551660362}
   - component: {fileID: 551660367}
+  - component: {fileID: 551660362}
   - component: {fileID: 551660368}
   m_Layer: 5
   m_Name: GameCanvas
@@ -3160,7 +3160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38a59cf09121c497983f68deaba6e7dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeValue: 90
+  timeValue: 10
   timerText: {fileID: 1746615274}
 --- !u!1 &1157032611
 GameObject:
@@ -4709,7 +4709,6 @@ GameObject:
   - component: {fileID: 1746615273}
   - component: {fileID: 1746615275}
   - component: {fileID: 1746615274}
-  - component: {fileID: 1746615276}
   m_Layer: 5
   m_Name: TImerText
   m_TagString: Untagged
@@ -4835,20 +4834,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1746615272}
   m_CullTransparentMesh: 1
---- !u!114 &1746615276
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1746615272}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38a59cf09121c497983f68deaba6e7dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  timeValue: 90
-  timerText: {fileID: 0}
 --- !u!1 &1803933199
 GameObject:
   m_ObjectHideFlags: 0
@@ -5232,7 +5217,7 @@ GameObject:
   - component: {fileID: 1959574645}
   - component: {fileID: 1959574644}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: ArrowLife
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5252,8 +5237,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 975144816}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
