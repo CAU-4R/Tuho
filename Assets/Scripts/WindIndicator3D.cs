@@ -1,14 +1,15 @@
-using TMPro;
 using UnityEngine;
+using TMPro;
 
-public class WindIndicator3D : MonoBehaviour
+public class WindHUDController : MonoBehaviour
 {
-    [Header("Settings")]
-    public float rotationSpeed = 5.0f; // 화살표가 부드럽게 돌아가는 속도
+    [Header("References")]
+    public Transform arrowModel;    // 회전시킬 화살표 모델 (Shaft/Head의 부모)
+    public TMP_Text strengthText;   // 텍스트
 
-    [Header("UI References")]
-    public TMP_Text strengthText; // 텍스트 컴포넌트 연결용 변수
-    
+    [Header("Settings")]
+    public float rotationSpeed = 10f;
+
     private Camera mainCamera;
 
     void Start()
@@ -18,34 +19,34 @@ public class WindIndicator3D : MonoBehaviour
 
     void Update()
     {
-        // 1. 게임 매니저가 없거나 바람 데이터가 없으면 리턴
-        if (GameManager.Instance == null) return;
+        if (GameManager.Instance == null || arrowModel == null) return;
 
         Vector3 windVector = GameManager.Instance.windVelocity.Value;
-        float windSpeed = windVector.magnitude; // 바람의 세기 (벡터의 길이)
+        float windSpeed = windVector.magnitude;
 
-        // 바람이 없으면 화살표를 숨기거나 회전 중지
-        if (windVector == Vector3.zero) return;
-
-        // 2. 바람의 방향(Rotation) 계산
-        // Quaternion.LookRotation: 특정 벡터 방향을 바라보는 회전값을 만들어줍니다.
-        // 바람이 "부는 방향"으로 화살표가 향하게 됩니다.
-        Quaternion targetRotation = Quaternion.LookRotation(windVector);
-
-        // 3. 회전 적용
-        // transform.rotation (월드 회전)을 제어합니다.
-        // 부모(카메라)가 회전해도, 이 오브젝트는 바람 방향을 유지하려고 하므로
-        // 결과적으로 나침반처럼 동작하게 됩니다.
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
-
-        // 4. 텍스트 업데이트 (소수점 1자리까지 표시)
+        // 1. 텍스트 업데이트
         if (strengthText != null)
         {
-            strengthText.text = $"{windSpeed:F1} m/s";
-
-            // 5. 텍스트 빌보드 처리
-            // 화살표가 돌아도, 텍스트는 항상 카메라를 정면으로 바라보게 함
-            strengthText.transform.rotation = mainCamera.transform.rotation;
+            if (windSpeed <= 0.01f) strengthText.text = "";
+            else strengthText.text = $"{windSpeed:F1} m/s";
         }
+
+        if (windSpeed <= 0.01f) return;
+
+        // 2. 상대 회전 계산
+        // 바람의 각도 (World)
+        float windAngle = Mathf.Atan2(windVector.x, windVector.z) * Mathf.Rad2Deg;
+
+        // 플레이어의 시선 각도 (Y축만 사용)
+        float playerAngle = mainCamera.transform.eulerAngles.y;
+
+        // 최종 화살표가 가리켜야 할 각도 = (바람 각도 - 내 시선 각도)
+        float targetAngle = windAngle - playerAngle;
+
+        // 3. 화살표 회전 적용
+        // 카메라가 정면에서 보고 있으므로, 모델을 Y축으로 돌려야 좌우로 돌아감
+        Quaternion targetRotation = Quaternion.Euler(0, targetAngle, 0);
+
+        arrowModel.localRotation = Quaternion.Slerp(arrowModel.localRotation, targetRotation, Time.deltaTime * rotationSpeed);
     }
 }
