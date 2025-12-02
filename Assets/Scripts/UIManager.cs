@@ -1,29 +1,69 @@
 using UnityEngine;
-using TMPro; // TextMeshPro를 사용하기 위해 필요
-using System.Collections; // 코루틴을 사용하기 위해 필요
+using System.Collections;
 
 public class UIManager : MonoBehaviour
 {
-    public TMP_Text scoreText;
-    public GameObject successTextObject;
+    public static UIManager Instance;
+    public GameObject coverageCanvas;
+    public GameObject startCanvas;
+    public GameObject hostCanvas;
+    public GameObject clientCanvas;
+    public GameObject gameCanvas;
 
-    // 점수 텍스트를 업데이트하는 함수
-    public void UpdateScore(int score)
+    void Awake()
     {
-        scoreText.text = "Score: " + score;
+        // 싱글톤 설정
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
-    // 성공 메시지를 보여주는 함수
-    public void ShowSuccessMessage()
+void Start()
+{
+    StartCoroutine(CoverageSequence());
+}
+
+private IEnumerator CoverageSequence()
+{
+    // 1) Coverage 켜기
+    SetOnly(coverageCanvas);
+
+    // 2) 5초 기다리기
+    yield return new WaitForSeconds(5f);
+
+    // 3) Start Canvas로 이동
+    ShowStart();
+}
+
+
+    public void ShowStart()
     {
-        StartCoroutine(ShowAndHideSuccessText());
+        SetOnly(startCanvas);
     }
 
-    // 메시지를 1.5초 동안 보여주고 자동으로 숨기는 코루틴
-    private IEnumerator ShowAndHideSuccessText()
+    public void ShowHost()
     {
-        successTextObject.SetActive(true); // 메시지 켜기
-        yield return new WaitForSeconds(1.5f); // 1.5초 기다리기
-        successTextObject.SetActive(false); // 메시지 끄기
+        SetOnly(hostCanvas);
+    }
+
+    public void ShowClient()
+    {
+        SetOnly(clientCanvas);
+    }
+
+    public void ShowGame()
+    {
+        SetOnly(gameCanvas);
+    }
+
+    // 하나만 켜고 나머지는 모두 끄기
+    private void SetOnly(GameObject target)
+    {
+        coverageCanvas.SetActive(false);
+        startCanvas.SetActive(false);
+        hostCanvas.SetActive(false);
+        clientCanvas.SetActive(false);
+        gameCanvas.SetActive(false);
+
+        target.SetActive(true);
     }
 }
