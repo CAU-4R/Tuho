@@ -34,7 +34,6 @@ public class PlayerController : NetworkBehaviour
 
     // 경고 UI
     private GameObject warningUI;
-    private const string WARNING_UI_NAME = "TooCloseText"; // Canvas에 있는 오브젝트 이름
     private Transform potTransform; // 투호통 위치 캐싱
 
     public override void OnNetworkSpawn()
@@ -62,19 +61,19 @@ public class PlayerController : NetworkBehaviour
     // UI 찾는 함수
     private void FindWarningUI()
     {
-        // 1. 먼저 항상 켜져 있는 부모 'Canvas'를 찾습니다.
-        GameObject canvas = GameObject.Find("GameCanvas/TooCloseText");
+        // 1. 최상위 부모인 'Canvas'를 먼저 찾습니다. (이건 켜져 있어야 찾을 수 있음)
+        GameObject canvas = GameObject.Find("Canvas");
 
         if (canvas != null)
         {
-            // 2. Canvas의 자식들 중에서 "TooCloseText"를 찾습니다.
-            // transform.Find는 꺼져 있는 자식도 찾을 수 있습니다.
-            Transform uiTransform = canvas.transform.Find(WARNING_UI_NAME);
+            // 2. 경로를 지정해서 찾습니다. (Canvas 아래의 GameCanvas 아래의 TooCloseText)
+            // 중간에 있는 GameCanvas나 TooCloseText가 꺼져 있어도 잘 찾습니다.
+            Transform uiTransform = canvas.transform.Find("GameCanvas/TooCloseText");
 
             if (uiTransform != null)
             {
                 warningUI = uiTransform.gameObject;
-                warningUI.SetActive(false);
+                warningUI.SetActive(false); // 찾았으면 끄기
             }
             else
             {
@@ -83,7 +82,7 @@ public class PlayerController : NetworkBehaviour
         }
         else
         {
-            Debug.LogWarning("[PlayerController] 'Canvas'를 찾을 수 없습니다. Hierarchy에 Canvas 오브젝트가 있는지 확인하세요.");
+            Debug.LogWarning("[PlayerController] 'Canvas'를 찾을 수 없습니다.");
         }
     }
 
