@@ -1,13 +1,14 @@
 {
   "dependencies": {
-    "com.nianticlabs.lightship": "file:C:/Unity/ardk-upm-3.16.0.tgz",
-    "com.nianticlabs.lightship.sharedar": "file:C:/Unity/sharedar-upm-3.16.0.tgz",
+    "com.nianticlabs.lightship": "https://github.com/niantic-lightship/ardk-upm.git",
+    "com.nianticlabs.lightship.sharedar": "https://github.com/niantic-lightship/sharedar-upm.git",
     "com.unity.collab-proxy": "2.9.3",
     "com.unity.feature.development": "1.0.2",
     "com.unity.inputsystem": "1.14.2",
     "com.unity.learn.iet-framework": "4.0.4",
     "com.unity.mobile.android-logcat": "1.4.6",
     "com.unity.multiplayer.center": "1.0.0",
+    "com.unity.probuilder": "6.0.8",
     "com.unity.render-pipelines.universal": "17.0.4",
     "com.unity.timeline": "1.8.9",
     "com.unity.xr.arcore": "6.2.0",

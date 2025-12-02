@@ -1,4 +1,3 @@
-// GameManager.cs
 using Unity.Netcode;
 using UnityEditor.PackageManager;
 using UnityEngine;
@@ -10,6 +9,15 @@ public class GameManager : NetworkBehaviour
     [Header("Game Prefabs")]
     public GameObject tuhoPotPrefab;
     public GameObject tuhoArrowPrefab;
+
+    [Header("Wind Settings")]
+    public float maxWindStrength = 5.0f; // 바람의 최대 세기
+
+    // 바람 벡터 동기화 (초기값 (0,0,0), 모두 읽기 가능, 서버만 쓰기 가능)
+    public NetworkVariable<Vector3> windVelocity = new NetworkVariable<Vector3>(
+        Vector3.zero,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server);
 
     // 투호통 배치 상태 (모두가 읽고, 서버만 쓴다)
     public NetworkVariable<bool> isPotPlaced = new NetworkVariable<bool>(
@@ -29,6 +37,24 @@ public class GameManager : NetworkBehaviour
         Instance = this;
         // 만약 씬 전환 시에도 유지되어야 한다면 아래 주석 해제
         // DontDestroyOnLoad(gameObject);
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        // 추가: 서버가 시작될 때 랜덤 바람 설정
+        if (IsServer)
+        {
+            // X, Z 축으로만 바람이 불도록 설정 (Y축은 보통 중력만 작용하도록 0으로 둠, 필요시 변경 가능)
+            float windX = Random.Range(-1f, 1f);
+            float windZ = Random.Range(-1f, 1f);
+
+            // 정규화 후 랜덤 세기 곱하기
+            Vector3 randomWind = new Vector3(windX, 0, windZ).normalized * Random.Range(1.0f, maxWindStrength);
+
+            windVelocity.Value = randomWind;
+
+            Debug.Log($"[GameManager] Wind Generated: {windVelocity.Value}");
+        }
     }
 
     // 오브젝트가 파괴될 때 Instance 참조 정리
