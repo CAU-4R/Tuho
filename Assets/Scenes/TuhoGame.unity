@@ -1959,7 +1959,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB4F1\uB85D\n"
+  m_text: "\uD0C0\uC774\uBA38 \uC2DC\uC791"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 072cc0ff9cc9448baabbc804a0c21494, type: 2}
   m_sharedMaterial: {fileID: -2545258616415543614, guid: 072cc0ff9cc9448baabbc804a0c21494, type: 2}
