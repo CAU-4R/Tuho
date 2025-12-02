@@ -3427,6 +3427,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeValue: 30
   timerText: {fileID: 1746615274}
+  textAnimator: {fileID: 1746615276}
 --- !u!1 &1157032611
 GameObject:
   m_ObjectHideFlags: 0
@@ -5273,6 +5274,7 @@ GameObject:
   - component: {fileID: 1746615273}
   - component: {fileID: 1746615275}
   - component: {fileID: 1746615274}
+  - component: {fileID: 1746615276}
   m_Layer: 5
   m_Name: TImerText
   m_TagString: Untagged
@@ -5398,6 +5400,34 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1746615272}
   m_CullTransparentMesh: 1
+--- !u!114 &1746615276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1746615272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8ace8ced0e81c847968cdca0aeda757, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  localSettings:
+    isResettingTimeOnNewText: 1
+    defaultEffectsMode: 1
+    timeScale: 0
+    defaultBehaviorTags: []
+    defaultAppearanceTags: []
+    defaultDisappearanceTags: []
+    isAnimatingBehaviors: 1
+    isAnimatingAppearances: 1
+    isAnimatingDisappearances: 1
+    useDynamicScaling: 1
+    referenceFontSize: 12
+  sharedSettings: {fileID: 0}
+  animationLoop: 0
+  databaseEffects: {fileID: 0}
+  styleSheet: {fileID: 0}
 --- !u!1 &1803933199
 GameObject:
   m_ObjectHideFlags: 0
