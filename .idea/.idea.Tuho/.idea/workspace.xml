@@ -6,14 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="8cb77856-8eb0-45c0-9bbb-79d3d75f9962" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Tuho/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Tuho/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/DefaultNetworkPrefabs.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/DefaultNetworkPrefabs.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/featureARScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/featureARScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/AR/ARCameraCPUCapture.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/AR/ARCameraCPUCapture.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/AR/ImageColocalizationManager.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/AR/ImageColocalizationManager.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Particle/ParticleEmitter.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Particle/ParticleEmitter.cs.meta" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,7 +115,7 @@
       <workItem from="1764226569293" duration="4741000" />
       <workItem from="1764238290939" duration="1034000" />
       <workItem from="1764590077029" duration="3329000" />
-      <workItem from="1764675327237" duration="3027000" />
+      <workItem from="1764675327237" duration="4280000" />
     </task>
     <servers />
   </component>
