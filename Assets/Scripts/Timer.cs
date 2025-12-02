@@ -5,13 +5,29 @@ public class Timer : MonoBehaviour
 {
     public float timeValue = 90;
     public TMP_Text timerText;
+    private bool isRunning = false;
+
     void Update()
     {
+        if (!isRunning) return;
+
         if (timeValue > 0)
             timeValue -= Time.deltaTime;
         else
             timeValue = 0;
 
+        DisplayTime(timeValue);
+    }
+
+    public void StartTimer()
+    {
+        isRunning = true;
+    }
+
+    public void ResetTimer(float newTime = 90)
+    {
+        timeValue = newTime;
+        isRunning = false;
         DisplayTime(timeValue);
     }
 

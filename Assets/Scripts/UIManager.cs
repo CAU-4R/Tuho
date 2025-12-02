@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using Unity.Netcode;
 
 public class UIManager : MonoBehaviour
 {
@@ -11,34 +10,70 @@ public class UIManager : MonoBehaviour
     public GameObject clientCanvas;
     public GameObject gameCanvas;
 
-    void Awake()
+    public Timer gameTimer;
+
+
+    private void Awake()
     {
-        // 싱글톤 설정
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }
 
-void Start()
-{
-    StartCoroutine(CoverageSequence());
-}
+    private void OnEnable()
+    {
+        // StartGameAR 이벤트 구독
+        StartGameAR.OnStartSharedSpaceHost += HandleHostSelected;
+        StartGameAR.OnJoinSharedSpaceClient += HandleClientSelected;
+        StartGameAR.OnEnterGameCanvas += HandleEnterGameCanvas;
+        StartGameAR.OnStartGame += HandleGameStart;
+    }
 
-private IEnumerator CoverageSequence()
-{
-    // 1) Coverage 켜기
-    SetOnly(coverageCanvas);
+    private void OnDisable()
+    {
+        // 이벤트 해제
+        StartGameAR.OnStartSharedSpaceHost -= HandleHostSelected;
+        StartGameAR.OnJoinSharedSpaceClient -= HandleClientSelected;
+        StartGameAR.OnEnterGameCanvas -= HandleEnterGameCanvas;
+        StartGameAR.OnStartGame -= HandleGameStart;
+    }
 
-    // 2) 5초 기다리기
-    yield return new WaitForSeconds(5f);
+    void Start()
+    {
+        StartCoroutine(CoverageSequence());
+    }
 
-    // 3) Start Canvas로 이동
-    ShowStart();
-}
-
+    private IEnumerator CoverageSequence()
+    {
+        SetOnly(coverageCanvas);
+        yield return new WaitForSeconds(5f);
+        ShowStart();
+    }
 
     public void ShowStart()
     {
         SetOnly(startCanvas);
+    }
+
+    private void HandleHostSelected()
+    {
+        ShowHost();
+    }
+
+    private void HandleClientSelected()
+    {
+        ShowClient();
+    }
+
+    private void HandleEnterGameCanvas()
+    {
+        SetOnly(gameCanvas);  // UI 이동만
+    }
+
+
+    private void HandleGameStart()
+    {
+        if (gameTimer != null)
+            gameTimer.StartTimer();
     }
 
     public void ShowHost()
@@ -51,25 +86,6 @@ private IEnumerator CoverageSequence()
         SetOnly(clientCanvas);
     }
 
-    public void RegisterAsHost()
-    {
-        NetworkManager.Singleton.StartHost();
-        Debug.Log("HOST 시작됨");
-        
-        // 게임 UI로 전환하고 싶다면 여기에 추가
-        SetOnly(gameCanvas);
-    }
-
-    public void RegisterAsClient()
-    {
-        NetworkManager.Singleton.StartClient();
-        Debug.Log("CLIENT 접속 시도");
-        
-        // 게임 UI로 전환하고 싶다면 여기에 추가
-        SetOnly(gameCanvas);
-    }
-
-    // 하나만 켜고 나머지는 모두 끄기
     private void SetOnly(GameObject target)
     {
         coverageCanvas.SetActive(false);
