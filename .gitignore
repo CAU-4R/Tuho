@@ -85,6 +85,9 @@ mono_crash.*
 # Febucci, KCDF, Universal Sound FX 패키지 무시
 Assets/FebucciTextAnimatorForUnity/
 Assets/KCDF/
+Assets/KCDF.meta
 Assets/Universal Sound FX/
 Assets/Plugins/Febucci/
+Assets/Plugins/Febucci.meta
 Assets/Febucci/
+Assets/Febucci.meta
