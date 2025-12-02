@@ -83,11 +83,14 @@ Assets/Plugins/ParrelSync.meta
 mono_crash.*
 
 # Febucci, KCDF, Universal Sound FX 패키지 무시
-Assets/FebucciTextAnimatorForUnity/
 Assets/KCDF/
 Assets/KCDF.meta
+
 Assets/Universal Sound FX/
+Assets/Universal Sound FX.meta
+
 Assets/Plugins/Febucci/
 Assets/Plugins/Febucci.meta
+
 Assets/Febucci/
 Assets/Febucci.meta
