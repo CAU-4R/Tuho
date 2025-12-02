@@ -7,7 +7,7 @@ using UnityEngine.XR.ARSubsystems;
 
 namespace CAU4R.Tuho.AR
 {
-    public class ARCameraCpuCapture : MonoBehaviour
+    public class ImageBlitter : MonoBehaviour
     {
         [SerializeField]
         private ARCameraManager _cameraManager;
@@ -17,7 +17,7 @@ namespace CAU4R.Tuho.AR
 
         private Texture2D _cameraTexture;
 
-        public void CaptureOnce()
+        public void CaptureImage()
         {
             if (!_cameraManager.TryAcquireLatestCpuImage(out XRCpuImage cpuImage)) return;
 

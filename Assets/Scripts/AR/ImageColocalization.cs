@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace CAU4R.Tuho.AR
 {
-    public class ImageColocalizationManager : MonoBehaviour
+    public class ImageColocalization : MonoBehaviour
     {
         public UnityEvent OnTrackingBegin;
         public UnityEvent OnTrackingEnd;
@@ -40,6 +40,21 @@ namespace CAU4R.Tuho.AR
         public void SetTargetImageSize(float size)
         {
             _targetImageSize = size;
+        }
+
+        public void SetRoomName(string roomName)
+        {
+            _roomName = roomName;
+        }
+
+        public void SetRoomCapacity(int capacity)
+        {
+            _roomCapacity = capacity;
+        }
+
+        public void SetRoomDescription(string description)
+        {
+            _roomDescription = description;
         }
         
         public void StartSharedSpace()
