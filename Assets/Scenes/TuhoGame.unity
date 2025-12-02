@@ -4686,7 +4686,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1597956046
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5172,6 +5172,7 @@ MonoBehaviour:
   hostCanvas: {fileID: 170997885}
   clientCanvas: {fileID: 771150269}
   gameCanvas: {fileID: 551660360}
+  quitCanvas: {fileID: 1597956045}
   gameTimer: {fileID: 1154533991}
 --- !u!114 &1721838136
 MonoBehaviour:
