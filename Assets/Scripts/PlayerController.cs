@@ -63,7 +63,7 @@ public class PlayerController : NetworkBehaviour
     private void FindWarningUI()
     {
         // 1. 먼저 항상 켜져 있는 부모 'Canvas'를 찾습니다.
-        GameObject canvas = GameObject.Find("Canvas");
+        GameObject canvas = GameObject.Find("GameCanvas/TooCloseText");
 
         if (canvas != null)
         {
@@ -78,7 +78,7 @@ public class PlayerController : NetworkBehaviour
             }
             else
             {
-                Debug.LogWarning($"[PlayerController] Canvas는 찾았지만, 그 아래에 '{WARNING_UI_NAME}'가 없습니다. 철자나 공백을 확인하세요.");
+                Debug.LogWarning($"[PlayerController] 'GameCanvas/TooCloseText' 경로를 찾을 수 없습니다. Hierarchy 구조와 철자를 확인하세요.");
             }
         }
         else

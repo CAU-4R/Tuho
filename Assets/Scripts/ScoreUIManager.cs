@@ -17,20 +17,29 @@ public class ScoreUIManager : MonoBehaviour
     }
 
     private IEnumerator InitScoreUI()
+{
+    while (true)
     {
-        // 네트워크 매니저나 데이터 매니저가 준비될 때까지 대기
-        // (접속 전이라도 UI는 살아있으므로, 접속할 때까지 기다려야 함)
-        while (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsListening || AllPlayerDataManager.Instance == null)
-        {
-            // 접속 대기 문구 표시 (선택 사항)
-            if (scoreText != null) scoreText.text = "Loading...";
-            yield return new WaitForSeconds(0.5f);
-        }
+        bool cond1 = NetworkManager.Singleton == null;
+        bool cond2 = (NetworkManager.Singleton != null && !NetworkManager.Singleton.IsListening);
+        bool cond3 = AllPlayerDataManager.Instance == null;
 
-        // 3. 이벤트 구독 및 초기화
-        AllPlayerDataManager.Instance.OnPlayerScoreChanged += HandleScoreChanged;
-        UpdateAllScores();
+        Debug.Log($"[ScoreUI] cond1(NetworkManager null): {cond1}");
+        Debug.Log($"[ScoreUI] cond2(IsListening false): {cond2}");
+        Debug.Log($"[ScoreUI] cond3(PlayerData null): {cond3}");
+
+        if (!cond1 && !cond2 && !cond3)
+            break;
+
+        scoreText.text = "Loading...";
+        yield return new WaitForSeconds(0.5f);
     }
+
+    // 초기화 로직 실행
+    AllPlayerDataManager.Instance.OnPlayerScoreChanged += HandleScoreChanged;
+    UpdateAllScores();
+}
+
 
     private void OnDestroy()
     {
