@@ -474,7 +474,7 @@ GameObject:
   - component: {fileID: 158794225}
   - component: {fileID: 158794224}
   m_Layer: 5
-  m_Name: EnrollButton
+  m_Name: JoinRoomButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -546,7 +546,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1721838135}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: ShowGame
+        m_MethodName: RegisterAsClient
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2501,7 +2501,7 @@ GameObject:
   - component: {fileID: 948407318}
   - component: {fileID: 948407317}
   m_Layer: 5
-  m_Name: EnrollButton
+  m_Name: CreateRoomButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2573,7 +2573,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1721838135}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: ShowGame
+        m_MethodName: RegisterAsHost
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

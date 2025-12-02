@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Unity.Netcode;
 
 public class UIManager : MonoBehaviour
 {
@@ -50,8 +51,21 @@ private IEnumerator CoverageSequence()
         SetOnly(clientCanvas);
     }
 
-    public void ShowGame()
+    public void RegisterAsHost()
     {
+        NetworkManager.Singleton.StartHost();
+        Debug.Log("HOST 시작됨");
+        
+        // 게임 UI로 전환하고 싶다면 여기에 추가
+        SetOnly(gameCanvas);
+    }
+
+    public void RegisterAsClient()
+    {
+        NetworkManager.Singleton.StartClient();
+        Debug.Log("CLIENT 접속 시도");
+        
+        // 게임 UI로 전환하고 싶다면 여기에 추가
         SetOnly(gameCanvas);
     }
 
