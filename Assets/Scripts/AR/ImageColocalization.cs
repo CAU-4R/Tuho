@@ -56,6 +56,13 @@ namespace CAU4R.Tuho.AR
         {
             _roomDescription = description;
         }
+
+        public void PrepareRoom()
+        {
+            var roomOptions = ISharedSpaceRoomOptions.CreateLightshipRoomOptions(_roomName, _roomCapacity, _roomDescription);
+
+            _sharedSpaceManager.PrepareRoom(roomOptions);
+        }
         
         public void StartSharedSpace()
         {
