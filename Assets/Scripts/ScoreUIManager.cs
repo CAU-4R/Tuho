@@ -24,9 +24,9 @@ public class ScoreUIManager : MonoBehaviour
         bool cond2 = (NetworkManager.Singleton != null && !NetworkManager.Singleton.IsListening);
         bool cond3 = AllPlayerDataManager.Instance == null;
 
-        Debug.Log($"[ScoreUI] cond1(NetworkManager null): {cond1}");
-        Debug.Log($"[ScoreUI] cond2(IsListening false): {cond2}");
-        Debug.Log($"[ScoreUI] cond3(PlayerData null): {cond3}");
+        //Debug.Log($"[ScoreUI] cond1(NetworkManager null): {cond1}");
+        //Debug.Log($"[ScoreUI] cond2(IsListening false): {cond2}");
+        //Debug.Log($"[ScoreUI] cond3(PlayerData null): {cond3}");
 
         if (!cond1 && !cond2 && !cond3)
             break;

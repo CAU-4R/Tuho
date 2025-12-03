@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7827243408831982667}
   - component: {fileID: 6885315259214604700}
-  - component: {fileID: 5172613204661914704}
+  - component: {fileID: 2730865187067125344}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -56,7 +56,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &5172613204661914704
+--- !u!114 &2730865187067125344
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -73,6 +73,7 @@ MonoBehaviour:
   minThrowPower: 5
   maxThrowPower: 20
   baseUpwardAngle: 1
+  minThrowDistance: 2
   arMeshLayer:
     serializedVersion: 2
     m_Bits: 64

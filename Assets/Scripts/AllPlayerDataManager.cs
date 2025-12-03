@@ -73,7 +73,7 @@ public class AllPlayerDataManager : NetworkBehaviour
     }
 
     // ---------------------------
-    // 🔥 추가된 부분 (ScoreDetector에서 호출)
+    // 추가된 부분 (ScoreDetector에서 호출)
     // ---------------------------
     [ServerRpc(RequireOwnership = false)]
     public void AddScoreServerRpc(ulong clientId, int amount)

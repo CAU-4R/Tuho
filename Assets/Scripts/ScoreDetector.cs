@@ -25,7 +25,6 @@ public class ScoreDetector : NetworkBehaviour
             // 5. 점수 매니저에게 점수 추가 요청
             if (AllPlayerDataManager.Instance != null)
             {
-                // 팀원 코드의 IncreaseScore 사용
                 AllPlayerDataManager.Instance.IncreaseScore(ownerId, 1);
                 Debug.Log($"Player {ownerId} Scored!");
             }

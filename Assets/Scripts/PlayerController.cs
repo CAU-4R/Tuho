@@ -14,6 +14,9 @@ public class PlayerController : NetworkBehaviour
     public float maxThrowPower = 20f;
     public float baseUpwardAngle = 1.0f; // 포물선을 위한 고정 각도 변수
 
+    [Header("Limit Settings")]
+    public float minThrowDistance = 2.0f; // 1.5미터 이내 접근 금지
+
     [Header("AR Setup")]
     public LayerMask arMeshLayer; // Player 프리팹에서 할당 필수
 
@@ -28,6 +31,10 @@ public class PlayerController : NetworkBehaviour
     // Input System 참조
     private TouchControl primaryTouch;
     private Mouse mouse;
+
+    // 경고 UI
+    private GameObject warningUI;
+    private Transform potTransform; // 투호통 위치 캐싱
 
     public override void OnNetworkSpawn()
     {
@@ -46,6 +53,37 @@ public class PlayerController : NetworkBehaviour
 
         // 오류 검사
         if (mainCamera == null) Debug.LogError("Main Camera를 찾을 수 없습니다!", this);
+
+        // 플레이어가 생성되면 직접 UI를 찾아서 연결
+        FindWarningUI();
+    }
+
+    // UI 찾는 함수
+    private void FindWarningUI()
+    {
+        // 1. 최상위 부모인 'Canvas'를 먼저 찾습니다. (이건 켜져 있어야 찾을 수 있음)
+        GameObject canvas = GameObject.Find("Canvas");
+
+        if (canvas != null)
+        {
+            // 2. 경로를 지정해서 찾습니다. (Canvas 아래의 GameCanvas 아래의 TooCloseText)
+            // 중간에 있는 GameCanvas나 TooCloseText가 꺼져 있어도 잘 찾습니다.
+            Transform uiTransform = canvas.transform.Find("GameCanvas/TooCloseText");
+
+            if (uiTransform != null)
+            {
+                warningUI = uiTransform.gameObject;
+                warningUI.SetActive(false); // 찾았으면 끄기
+            }
+            else
+            {
+                Debug.LogWarning($"[PlayerController] 'GameCanvas/TooCloseText' 경로를 찾을 수 없습니다. Hierarchy 구조와 철자를 확인하세요.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[PlayerController] 'Canvas'를 찾을 수 없습니다.");
+        }
     }
 
     void Update()
@@ -97,7 +135,16 @@ public class PlayerController : NetworkBehaviour
 
             if (GameManager.Instance.isPotPlaced.Value)
             {
-                HandleArrowThrow(dragEndPosition);
+                // 거리가 충분한지 먼저 체크하고, 통과하면 던짐
+                if (CheckDistanceToPot())
+                {
+                    HandleArrowThrow(dragEndPosition);
+                }
+                else
+                {
+                    Debug.Log("너무 가까워서 던질 수 없습니다");
+                    ShowWarningUI();
+                }
             }
             else
             {
@@ -111,6 +158,54 @@ public class PlayerController : NetworkBehaviour
                 }
             }
         }
+    }
+
+    // 거리 체크 함수
+    private bool CheckDistanceToPot()
+    {
+        // 1. 투호통을 아직 못 찾았다면 찾음
+        if (potTransform == null)
+        {
+            GameObject potObj = GameObject.FindGameObjectWithTag("TuhoPot");
+            if (potObj != null)
+            {
+                potTransform = potObj.transform;
+            }
+            else
+            {
+                // 아직 투호통이 없거나 태그 설정을 안 했다면 일단 던지게 해줌 (버그 방지)
+                return true;
+            }
+        }
+
+        // 2. 거리 계산 (카메라 위치 vs 투호통 위치)
+        float distance = Vector3.Distance(mainCamera.transform.position, potTransform.position);
+
+        // 3. 디버깅용 로그
+        Debug.Log($"Distance to Pot: {distance:F2}m");
+
+        // 4. 최소 거리보다 멀리 떨어져 있으면 true(던지기 가능), 아니면 false
+        return distance >= minThrowDistance;
+    }
+
+    // UI 표시 함수
+    private void ShowWarningUI()
+    {
+        // 혹시 처음에 못 찾았을 수도 있으니 다시 확인
+        if (warningUI == null) FindWarningUI();
+
+        if (warningUI != null)
+        {
+            warningUI.SetActive(true);
+            CancelInvoke(nameof(HideWarningUI));
+            Invoke(nameof(HideWarningUI), 1.5f); // 1.5초 뒤에 끄기
+        }
+    }
+
+    // UI 숨기기 함수
+    private void HideWarningUI()
+    {
+        if (warningUI != null) warningUI.SetActive(false);
     }
 
     private void HandlePotPlacement(Vector2 screenPosition)
