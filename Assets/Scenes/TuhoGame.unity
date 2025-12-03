@@ -1918,7 +1918,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC2DC\uC791"
+  m_text: "\uD0C0\uC774\uBA38 \uC2DC\uC791"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 072cc0ff9cc9448baabbc804a0c21494, type: 2}
   m_sharedMaterial: {fileID: -2545258616415543614, guid: 072cc0ff9cc9448baabbc804a0c21494, type: 2}
@@ -4059,12 +4059,12 @@ GameObject:
   - component: {fileID: 2807969240370670636}
   - component: {fileID: 2154782565981914889}
   m_Layer: 5
-  m_Name: FinishCanvas
+  m_Name: QuitCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2410303734773871035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5337,6 +5337,7 @@ MonoBehaviour:
   hostCanvas: {fileID: 7357994986016476947}
   clientCanvas: {fileID: 5097465480073702886}
   gameCanvas: {fileID: 7264871846520543191}
+  quitCanvas: {fileID: 2401524206715141124}
   gameTimer: {fileID: 8763239618297470016}
 --- !u!114 &5278155000652112090
 MonoBehaviour:

@@ -3,31 +3,46 @@ using TMPro;
 
 public class Timer : MonoBehaviour
 {
+    public System.Action OnTimerEnd;
     public float timeValue = 90;
     public TMP_Text timerText;
     private bool isRunning = false;
+    private bool endTriggered = false;
 
     void Update()
     {
         if (!isRunning) return;
 
         if (timeValue > 0)
+        {
             timeValue -= Time.deltaTime;
+        }
         else
+        {
             timeValue = 0;
 
-        DisplayTime(timeValue);
+            if (!endTriggered)
+            {
+                endTriggered = true;
+                isRunning = false;
+
+                OnTimerEnd?.Invoke();   // ← 여기서 UIManager로 알려줌
+            }
+        }
+            DisplayTime(timeValue);
     }
 
     public void StartTimer()
     {
         isRunning = true;
+        endTriggered = false; 
     }
 
     public void ResetTimer(float newTime = 90)
     {
         timeValue = newTime;
         isRunning = false;
+        endTriggered = false;
         DisplayTime(timeValue);
     }
 

@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
     public GameObject hostCanvas;
     public GameObject clientCanvas;
     public GameObject gameCanvas;
+    public GameObject quitCanvas;
 
     public Timer gameTimer;
 
@@ -26,6 +27,9 @@ public class UIManager : MonoBehaviour
         StartGameAR.OnJoinSharedSpaceClient += HandleClientSelected;
         StartGameAR.OnEnterGameCanvas += HandleEnterGameCanvas;
         StartGameAR.OnStartGame += HandleGameStart;
+
+        if (gameTimer != null)
+        gameTimer.OnTimerEnd += HandleTimerEnd;
     }
 
     private void OnDisable()
@@ -35,6 +39,9 @@ public class UIManager : MonoBehaviour
         StartGameAR.OnJoinSharedSpaceClient -= HandleClientSelected;
         StartGameAR.OnEnterGameCanvas -= HandleEnterGameCanvas;
         StartGameAR.OnStartGame -= HandleGameStart;
+
+        if (gameTimer != null)
+        gameTimer.OnTimerEnd -= HandleTimerEnd;
     }
 
     void Start()
@@ -76,6 +83,11 @@ public class UIManager : MonoBehaviour
             gameTimer.StartTimer();
     }
 
+    private void HandleTimerEnd()
+    {
+        ShowQuitCanvas();
+    }
+
     public void ShowHost()
     {
         SetOnly(hostCanvas);
@@ -86,6 +98,11 @@ public class UIManager : MonoBehaviour
         SetOnly(clientCanvas);
     }
 
+    public void ShowQuitCanvas()
+    {
+        SetOnly(quitCanvas);
+    }
+
     private void SetOnly(GameObject target)
     {
         coverageCanvas.SetActive(false);
@@ -93,6 +110,7 @@ public class UIManager : MonoBehaviour
         hostCanvas.SetActive(false);
         clientCanvas.SetActive(false);
         gameCanvas.SetActive(false);
+        quitCanvas.SetActive(false); 
 
         target.SetActive(true);
     }
