@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 // 이 스크립트는 Rigidbody가 있는 오브젝트에만 붙일 수 있도록 강제합니다.
 [RequireComponent(typeof(Rigidbody))]
