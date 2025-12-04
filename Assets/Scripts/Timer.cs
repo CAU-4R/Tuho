@@ -1,13 +1,34 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 public class Timer : MonoBehaviour
 {
     public System.Action OnTimerEnd;
-    public float timeValue = 90;
+
+    [Header("Main Timer")]
+    public float timeValue = 90f;
     public TMP_Text timerText;
+
+    [Header("Countdown Before Start")]
+    public TMP_Text countdownText;
+    public float preStartCountdown = 5f;
+
     private bool isRunning = false;
     private bool endTriggered = false;
+
+
+    void Start()
+    {
+        if(countdownText != null)
+            countdownText.gameObject.SetActive(false);
+
+        if(timerText != null)
+            timerText.gameObject.SetActive(true);
+
+        DisplayTime(timeValue);
+    }
+
 
     void Update()
     {
@@ -26,27 +47,56 @@ public class Timer : MonoBehaviour
                 endTriggered = true;
                 isRunning = false;
 
-                OnTimerEnd?.Invoke();   // ← 여기서 UIManager로 알려줌
+                OnTimerEnd?.Invoke();  // UIManager로 알려줌
             }
         }
-            DisplayTime(timeValue);
+
+        DisplayTime(timeValue);
     }
 
     public void StartTimer()
     {
-        isRunning = true;
-        endTriggered = false; 
+        StopAllCoroutines();
+        StartCoroutine(StartCountdownThenTimer());
     }
 
-    public void ResetTimer(float newTime = 90)
+
+    private IEnumerator StartCountdownThenTimer()
     {
+        float count = preStartCountdown;
+
+        countdownText.gameObject.SetActive(true);
+
+        // 5 → 4 → 3 → 2 → 1 표시
+        while (count > 0)
+        {
+            countdownText.text = Mathf.CeilToInt(count).ToString();
+            yield return new WaitForSeconds(1f);
+            count -= 1f;
+        }
+
+        countdownText.gameObject.SetActive(false);
+
+        isRunning = true;
+        endTriggered = false;
+    }
+
+
+    public void ResetTimer(float newTime = 90f)
+    {
+        StopAllCoroutines();
         timeValue = newTime;
         isRunning = false;
         endTriggered = false;
+
         DisplayTime(timeValue);
+
+        countdownText.gameObject.SetActive(false);
+        timerText.gameObject.SetActive(true);
     }
 
-    void DisplayTime(float timeToDisplay)
+
+    private void DisplayTime(float timeToDisplay)
     {
         if (timeToDisplay < 0)
             timeToDisplay = 0;
