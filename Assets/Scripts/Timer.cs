@@ -17,13 +17,18 @@ public class Timer : MonoBehaviour
     private bool isRunning = false;
     private bool endTriggered = false;
 
+    private Color defaultColor;   // 원래 색 저장용
+
 
     void Start()
     {
-        if(countdownText != null)
+        if (timerText != null)
+            defaultColor = timerText.color;
+
+        if (countdownText != null)
             countdownText.gameObject.SetActive(false);
 
-        if(timerText != null)
+        if (timerText != null)
             timerText.gameObject.SetActive(true);
 
         DisplayTime(timeValue);
@@ -47,7 +52,7 @@ public class Timer : MonoBehaviour
                 endTriggered = true;
                 isRunning = false;
 
-                OnTimerEnd?.Invoke();  // UIManager로 알려줌
+                OnTimerEnd?.Invoke();
             }
         }
 
@@ -60,14 +65,12 @@ public class Timer : MonoBehaviour
         StartCoroutine(StartCountdownThenTimer());
     }
 
-
     private IEnumerator StartCountdownThenTimer()
     {
         float count = preStartCountdown;
 
         countdownText.gameObject.SetActive(true);
 
-        // 5 → 4 → 3 → 2 → 1 표시
         while (count > 0)
         {
             countdownText.text = Mathf.CeilToInt(count).ToString();
@@ -75,7 +78,7 @@ public class Timer : MonoBehaviour
             count -= 1f;
         }
 
-        countdownText.text = "GO!"; 
+        countdownText.text = "GO!";
         yield return new WaitForSeconds(1f);
 
         countdownText.gameObject.SetActive(false);
@@ -83,7 +86,6 @@ public class Timer : MonoBehaviour
         isRunning = true;
         endTriggered = false;
     }
-
 
     public void ResetTimer(float newTime = 90f)
     {
@@ -96,8 +98,11 @@ public class Timer : MonoBehaviour
 
         countdownText.gameObject.SetActive(false);
         timerText.gameObject.SetActive(true);
-    }
 
+        // 색 초기화
+        if (timerText != null)
+            timerText.color = defaultColor;
+    }
 
     private void DisplayTime(float timeToDisplay)
     {
@@ -108,5 +113,11 @@ public class Timer : MonoBehaviour
         float seconds = Mathf.FloorToInt(timeToDisplay % 60);
 
         timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+
+        // ⭐ 7초 이하 색 변경
+        if (timeToDisplay <= 7f)
+            timerText.color = Color.red;
+        else
+            timerText.color = defaultColor;
     }
 }

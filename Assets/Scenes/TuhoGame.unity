@@ -7357,6 +7357,7 @@ GameObject:
   - component: {fileID: 5945119069032245157}
   - component: {fileID: 5193269663634527366}
   - component: {fileID: 2772926301903618816}
+  - component: {fileID: 7060135989836043501}
   m_Layer: 5
   m_Name: TImerText
   m_TagString: Untagged
@@ -7364,6 +7365,35 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &7060135989836043501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7060135989836043500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8ace8ced0e81c847968cdca0aeda757, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  localSettings:
+    isResettingTimeOnNewText: 1
+    defaultEffectsMode: 1
+    timeScale: 0
+    defaultBehaviorTags:
+    - shake
+    defaultAppearanceTags: []
+    defaultDisappearanceTags: []
+    isAnimatingBehaviors: 1
+    isAnimatingAppearances: 1
+    isAnimatingDisappearances: 1
+    useDynamicScaling: 1
+    referenceFontSize: 12
+  sharedSettings: {fileID: 0}
+  animationLoop: 0
+  databaseEffects: {fileID: 0}
+  styleSheet: {fileID: 0}
 --- !u!1 &7077821832480975883
 GameObject:
   m_ObjectHideFlags: 0
@@ -8333,8 +8363,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38a59cf09121c497983f68deaba6e7dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeValue: 20
-  timerText: {fileID: 2772926301903618816}
+  timeValue: 10
+  timerText: {fileID: 0}
   countdownText: {fileID: 747057314}
   preStartCountdown: 5
 --- !u!114 &8901922795972453186
