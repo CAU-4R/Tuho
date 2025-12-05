@@ -75,6 +75,9 @@ public class Timer : MonoBehaviour
             count -= 1f;
         }
 
+        countdownText.text = "GO!"; 
+        yield return new WaitForSeconds(1f);
+
         countdownText.gameObject.SetActive(false);
 
         isRunning = true;
