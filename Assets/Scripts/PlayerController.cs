@@ -34,6 +34,7 @@ public class PlayerController : NetworkBehaviour
 
     // 경고 UI
     private GameObject warningUI;
+    private GameObject noArrowUI;
     private Transform potTransform; // 투호통 위치 캐싱
 
     public override void OnNetworkSpawn()
@@ -59,25 +60,31 @@ public class PlayerController : NetworkBehaviour
     }
 
     // UI 찾는 함수
+    // UI 찾는 함수
     private void FindWarningUI()
     {
-        // 1. 최상위 부모인 'Canvas'를 먼저 찾습니다. (이건 켜져 있어야 찾을 수 있음)
         GameObject canvas = GameObject.Find("Canvas");
 
         if (canvas != null)
         {
-            // 2. 경로를 지정해서 찾습니다. (Canvas 아래의 GameCanvas 아래의 TooCloseText)
-            // 중간에 있는 GameCanvas나 TooCloseText가 꺼져 있어도 잘 찾습니다.
+            // 1. 거리 경고 UI 찾기
             Transform uiTransform = canvas.transform.Find("GameCanvas/TooCloseText");
-
             if (uiTransform != null)
             {
                 warningUI = uiTransform.gameObject;
-                warningUI.SetActive(false); // 찾았으면 끄기
+                warningUI.SetActive(false);
+            }
+
+            // 2. 화살 소진 UI 찾기
+            Transform noArrowTransform = canvas.transform.Find("GameCanvas/NoArrowText");
+            if (noArrowTransform != null)
+            {
+                noArrowUI = noArrowTransform.gameObject;
+                noArrowUI.SetActive(false);
             }
             else
             {
-                Debug.LogWarning($"[PlayerController] 'GameCanvas/TooCloseText' 경로를 찾을 수 없습니다. Hierarchy 구조와 철자를 확인하세요.");
+                Debug.LogWarning($"[PlayerController] 'GameCanvas/NoArrowText' 경로를 찾을 수 없습니다.");
             }
         }
         else
@@ -135,26 +142,43 @@ public class PlayerController : NetworkBehaviour
 
             if (GameManager.Instance.isPotPlaced.Value)
             {
-                // 거리가 충분한지 먼저 체크하고, 통과하면 던짐
-                if (CheckDistanceToPot())
+                int myArrows = AllPlayerDataManager.Instance.GetArrowCount(OwnerClientId);
+
+                if (myArrows <= 0)
                 {
-                    HandleArrowThrow(dragEndPosition);
+                    Debug.Log("화살이 모두 소진되었습니다.");
+                    ShowNoArrowUI();
                 }
                 else
                 {
-                    Debug.Log("너무 가까워서 던질 수 없습니다");
-                    ShowWarningUI();
+                    if (CheckDistanceToPot())
+                    {
+                        HandleArrowThrow(dragEndPosition);
+                    }
+                    else
+                    {
+                        Debug.Log("너무 가까워서 던질 수 없습니다");
+                        ShowWarningUI();
+                    }
                 }
             }
             else
             {
                 if (Vector2.Distance(dragStartPosition, dragEndPosition) < 20.0f)
                 {
-                    HandlePotPlacement(inputPosition);
+                    // 호스트만 배치 가능
+                    if (IsServer)
+                    {
+                        HandlePotPlacement(inputPosition);
+                    }
+                    else
+                    {
+                        Debug.Log("투호통은 호스트만 배치할 수 있습니다.");
+                    }
                 }
                 else
                 {
-                    Debug.LogWarning("투호통이 아직 배치되지 않았는데 드래그(던지기)를 시도했습니다. 탭하여 투호통을 먼저 배치하세요.");
+                    Debug.LogWarning("투호통이 배치되지 않았습니다. 탭하여 배치하세요.");
                 }
             }
         }
@@ -188,10 +212,9 @@ public class PlayerController : NetworkBehaviour
         return distance >= minThrowDistance;
     }
 
-    // UI 표시 함수
+    // 거리 경고 UI 표시 함수
     private void ShowWarningUI()
     {
-        // 혹시 처음에 못 찾았을 수도 있으니 다시 확인
         if (warningUI == null) FindWarningUI();
 
         if (warningUI != null)
@@ -202,10 +225,29 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    // UI 숨기기 함수
+    // 거리 경고 UI 숨기기 함수
     private void HideWarningUI()
     {
         if (warningUI != null) warningUI.SetActive(false);
+    }
+
+    // 화살 없음 UI 표시 함수
+    private void ShowNoArrowUI()
+    {
+        if (noArrowUI == null) FindWarningUI();
+
+        if (noArrowUI != null)
+        {
+            noArrowUI.SetActive(true);
+            CancelInvoke(nameof(HideNoArrowUI));
+            Invoke(nameof(HideNoArrowUI), 1.5f);
+        }
+    }
+
+    // 화살 없음 UI 숨기기 함수
+    private void HideNoArrowUI()
+    {
+        if (noArrowUI != null) noArrowUI.SetActive(false);
     }
 
     private void HandlePotPlacement(Vector2 screenPosition)
@@ -233,8 +275,8 @@ public class PlayerController : NetworkBehaviour
         // float throwPower = Mathf.Clamp(dragLength * powerMultiplier, minThrowPower, maxThrowPower);
 
         // 2. 방향 계산:
-        // 기본 방향 = 카메라 정면 + 고정된 위쪽 방향 (포물선 보장)
-        Vector3 baseDirection = (mainCamera.transform.forward + (Vector3.up * baseUpwardAngle));
+        float forwardSign = Mathf.Sign(dragVector.y);
+        Vector3 baseDirection = (mainCamera.transform.forward * forwardSign) + (Vector3.up * baseUpwardAngle);
 
         // 좌우 오프셋 = 드래그의 X값으로 좌우 방향 조절
         Vector3 directionOffset = (mainCamera.transform.right * dragVector.x * horizontalSensitivity);
@@ -264,8 +306,7 @@ public class PlayerController : NetworkBehaviour
     [ServerRpc]
     private void RequestPotPlacementServerRpc(Vector3 position, Quaternion rotation)
     {
-        // 이 코드는 이제 서버(호스트)에서만 실행됩니다.
-        // 서버는 GameManager의 스폰 함수를 안전하게 호출할 수 있습니다.
+        if (!IsServer) return;
         GameManager.Instance.SpawnPot(position, rotation);
     }
 
@@ -275,6 +316,9 @@ public class PlayerController : NetworkBehaviour
     {
         // rpcParams.Receive.SenderClientId를 통해 누가 요청했는지 서버는 정확히 알 수 있습니다.
         ulong shooterId = rpcParams.Receive.SenderClientId;
+
+        // 서버에서 화살 개수 차감 요청
+        AllPlayerDataManager.Instance.DecreaseArrowCount(shooterId);
 
         // GameManager에게 쏜 사람(shooterId) 정보를 함께 전달합니다.
         GameManager.Instance.SpawnArrow(shooterId, position, rotation, force);
