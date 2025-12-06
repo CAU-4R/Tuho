@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/FeatureARScene.unity
+    guid: 124fe580b75ab419b9797033a486eb4a
+  - enabled: 1
     path: Assets/Scenes/TuhoGame.unity
     guid: 3c1096858784ada4a98f8bf6d1aa34e4
   m_configObjects:
