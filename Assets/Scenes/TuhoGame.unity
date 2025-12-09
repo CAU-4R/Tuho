@@ -846,6 +846,7 @@ GameObject:
   - component: {fileID: 764663617}
   - component: {fileID: 764663619}
   - component: {fileID: 764663620}
+  - component: {fileID: 764663621}
   m_Layer: 5
   m_Name: StartButton
   m_TagString: Untagged
@@ -955,9 +956,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: TimerManager, Assembly-CSharp
-        m_MethodName: StartTimerButton
+      - m_Target: {fileID: 764663620}
+        m_TargetAssemblyTypeName: TimerStartButton, Assembly-CSharp
+        m_MethodName: OnClickStart
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -966,7 +967,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 0
+        m_CallState: 2
 --- !u!114 &764663620
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -977,6 +978,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b5426aac45c79419ca44b0ca2b8dbf45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &764663621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 764663615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df468a3b287ff4fdfa152c818aa3fb95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &771423018
