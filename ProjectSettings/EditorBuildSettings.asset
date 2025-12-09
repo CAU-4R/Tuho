@@ -6,11 +6,14 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/FeatureARScene.unity
+    path: Assets/Scenes/featureARScene.unity
     guid: 124fe580b75ab419b9797033a486eb4a
   - enabled: 1
     path: Assets/Scenes/TuhoGame.unity
     guid: 3c1096858784ada4a98f8bf6d1aa34e4
+  - enabled: 1
+    path: Assets/Scenes/MainScene.unity
+    guid: ec25f6306e966423a9d321b5aadb4247
   m_configObjects:
     Niantic.Lightship.AR.LightshipSettings: {fileID: 11400000, guid: 5bf9c558208d4a24c846cbb49f4dfd58, type: 2}
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 6ee72d15cf39dd748a13eac57397b9af, type: 2}

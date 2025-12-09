@@ -39,7 +39,6 @@ public class StartGameAR : MonoBehaviour
         isHost = true;
         Debug.Log("Host selected");
         OnStartSharedSpaceHost?.Invoke();
-        NetworkManager.Singleton.StartHost();
 
         OnEnterGameCanvas?.Invoke();
     }
@@ -49,7 +48,6 @@ public class StartGameAR : MonoBehaviour
         isHost = false;
         Debug.Log("Client selected");
         OnJoinSharedSpaceClient?.Invoke();
-        NetworkManager.Singleton.StartClient();
 
         OnEnterGameCanvas?.Invoke();
     }

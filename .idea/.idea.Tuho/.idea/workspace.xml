@@ -6,8 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="8cb77856-8eb0-45c0-9bbb-79d3d75f9962" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Tuho/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Tuho/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/featureARScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/featureARScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/AR/ImageColocalization.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/AR/ImageColocalization.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/TuhoArrowNew.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/TuhoArrowNew.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/TuhoArrow_Particle.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/TuhoArrow_Particle.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/TuhoPotNew.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/TuhoPotNew.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/TuhoPot_Particle.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/TuhoPot_Particle.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Network/NetworkConnectionManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Network/NetworkConnectionManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/StartGameAR.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/StartGameAR.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +44,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/ar&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;release-main&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -118,6 +125,7 @@
       <workItem from="1764238290939" duration="1034000" />
       <workItem from="1764590077029" duration="3329000" />
       <workItem from="1764675327237" duration="5385000" />
+      <workItem from="1765279689446" duration="3027000" />
     </task>
     <servers />
   </component>

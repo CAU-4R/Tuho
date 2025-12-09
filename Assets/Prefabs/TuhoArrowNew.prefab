@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 5026193788393096127}
   - component: {fileID: 1551569132240704923}
   - component: {fileID: 4483096310269353996}
+  - component: {fileID: -6550315851235171249}
   m_Layer: 0
   m_Name: TuhoArrowNew
   m_TagString: Arrow
@@ -51,7 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2780721593
+  GlobalObjectIdHash: 1637220119
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -183,6 +184,19 @@ MonoBehaviour:
   ownerClientId:
     m_InternalValue: 0
   hasScored: 0
+--- !u!114 &-6550315851235171249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6532353689425910254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57c28ed28c284b8bbb08e7d5bded1bd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _putInSharedOrigin: 1
 --- !u!1 &7874352545192221508
 GameObject:
   m_ObjectHideFlags: 0

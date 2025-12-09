@@ -5,14 +5,28 @@ namespace CAU4R.Tuho.Network
 {
     public class NetworkConnectionManager : MonoBehaviour
     {
-        public void ConnectAsHost()
+        private bool _isHost;
+        
+        public void PrepareAsHost()
         {
-            NetworkManager.Singleton.StartHost();
+            _isHost = true;
         }
 
-        public void ConnectAsClient()
+        public void PrepareAsClient()
         {
-            NetworkManager.Singleton.StartClient();
+            _isHost = false;
+        }
+
+        public void Connect()
+        {
+            if (_isHost)
+            {
+                NetworkManager.Singleton.StartHost();
+            }
+            else
+            {
+                NetworkManager.Singleton.StartClient();
+            }
         }
     }
 }
