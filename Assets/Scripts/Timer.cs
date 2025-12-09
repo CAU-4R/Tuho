@@ -42,16 +42,18 @@ public class Timer : MonoBehaviour
         if (timeValue > 0)
         {
             timeValue -= Time.deltaTime;
+
+            // 시간 음수 방지
+            timeValue = Mathf.Max(timeValue, 0f);
         }
         else
         {
-            timeValue = 0;
+            timeValue = 0f;
 
             if (!endTriggered)
             {
                 endTriggered = true;
                 isRunning = false;
-
                 OnTimerEnd?.Invoke();
             }
         }
@@ -104,20 +106,28 @@ public class Timer : MonoBehaviour
             timerText.color = defaultColor;
     }
 
-    private void DisplayTime(float timeToDisplay)
+private void DisplayTime(float timeToDisplay)
+{
+    // 무조건 먼저 0 이하 방지
+    if (timeToDisplay <= 0f)
     {
-        if (timeToDisplay < 0)
-            timeToDisplay = 0;
-
-        float minutes = Mathf.FloorToInt(timeToDisplay / 60);
-        float seconds = Mathf.FloorToInt(timeToDisplay % 60);
-
-        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
-
-        // ⭐ 7초 이하 색 변경
-        if (timeToDisplay <= 7f)
-            timerText.color = Color.red;
-        else
-            timerText.color = defaultColor;
+        timerText.text = "00:00";
+        timerText.color = Color.red;
+        return;
     }
+
+    int totalSeconds = Mathf.FloorToInt(timeToDisplay);
+    int minutes = totalSeconds / 60;
+    int seconds = totalSeconds % 60;
+
+    timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+
+    // 7초 이하 빨간색
+    if (timeToDisplay <= 7f)
+        timerText.color = Color.red;
+    else
+        timerText.color = defaultColor;
+}
+
+
 }
