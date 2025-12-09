@@ -56,7 +56,20 @@ public class TimerManager : NetworkBehaviour
             timeValue.Value = 0;
             isTimerRunning.Value = false;
 
-            OpenQuitCanvasClientRpc();
+            // OpenQuitCanvasClientRpc();
+
+            // 시간이 다 되면 게임 종료 처리
+            FinishGame();
+        }
+    }
+
+    // 게임 종료 및 랭킹 산출 요청
+    private void FinishGame()
+    {
+        Debug.Log("Game Over! Calculating Rankings...");
+        if (RankingManager.Instance != null)
+        {
+            RankingManager.Instance.CalculateAndShowRankings();
         }
     }
 
