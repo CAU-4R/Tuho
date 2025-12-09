@@ -6,6 +6,7 @@ public class GameBootstrap : MonoBehaviour
     [Header("Spawn Settings")]
     public GameObject gameManagerPrefab;
     public GameObject playerDataPrefab; // 추가: PlayerData 프리팹 연결용 변수
+    public GameObject timerManagerPrefab;
 
     void Start()
     {
@@ -31,6 +32,13 @@ public class GameBootstrap : MonoBehaviour
             {
                 GameObject pd = Instantiate(playerDataPrefab);
                 pd.GetComponent<NetworkObject>().Spawn();
+            }
+
+            // 3. TimerManager 생성
+            if (TimerManager.Instance == null)
+            {
+                GameObject tm = Instantiate(timerManagerPrefab);
+                tm.GetComponent<NetworkObject>().Spawn();
             }
         }
     }
