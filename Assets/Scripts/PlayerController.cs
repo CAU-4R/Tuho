@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
@@ -102,6 +104,25 @@ public class PlayerController : NetworkBehaviour
         HandleCombinedInput();
     }
 
+    // UI 감지 함수
+    private bool IsPointerOverUIObject(Vector2 touchPos)
+    {
+        if (EventSystem.current == null) return false;
+
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            Debug.Log("Blocked by EventSystem.current.IsPointerOverGameObject()");
+            return true;
+        }
+
+        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+        eventDataCurrentPosition.position = touchPos;
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+
+        return results.Count > 0;
+    }
+
     private void HandleCombinedInput()
     {
         // 입력 소스 결정 (터치 우선)
@@ -127,6 +148,14 @@ public class PlayerController : NetworkBehaviour
         // 1. 드래그 시작 (터치 또는 클릭 시작)
         if (wasPressed)
         {
+            // UI 위에서 눌렀다면 드래그 시작 자체를 막음
+            if (IsPointerOverUIObject(inputPosition))
+            {
+                isDragging = false;
+                Debug.Log("Input Ignored: Touched UI");
+                return;
+            }
+
             dragStartPosition = inputPosition;
             isDragging = true;
         }
@@ -134,6 +163,12 @@ public class PlayerController : NetworkBehaviour
         // 2. 드래그 종료 (터치 또는 클릭 뗌)
         if (wasReleased && isDragging)
         {
+            if (IsPointerOverUIObject(inputPosition))
+            {
+                isDragging = false;
+                return;
+            }
+
             isDragging = false;
             Vector2 dragEndPosition = inputPosition;
 
