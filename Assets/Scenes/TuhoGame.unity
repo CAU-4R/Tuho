@@ -983,7 +983,8 @@ GameObject:
   - component: {fileID: 764663617}
   - component: {fileID: 764663619}
   - component: {fileID: 764663620}
-  - component: {fileID: 764663621}
+  - component: {fileID: 764663622}
+  - component: {fileID: 764663623}
   m_Layer: 5
   m_Name: StartButton
   m_TagString: Untagged
@@ -1117,18 +1118,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5426aac45c79419ca44b0ca2b8dbf45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &764663621
+--- !u!114 &764663622
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 764663615}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df468a3b287ff4fdfa152c818aa3fb95, type: 3}
+  m_Script: {fileID: 11500000, guid: 45682592a207f4867972cc419585418c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &764663623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 764663615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1288609436
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &771423018
 GameObject:
   m_ObjectHideFlags: 0
