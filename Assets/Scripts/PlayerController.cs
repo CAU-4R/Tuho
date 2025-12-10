@@ -142,6 +142,13 @@ public class PlayerController : NetworkBehaviour
 
             if (GameManager.Instance.isPotPlaced.Value)
             {
+                if (!TimerManager.Instance.isTimerRunning.Value)
+                {
+                    Debug.Log("타이머가 진행 중이 아니라서 화살을 던질 수 없습니다.");
+                    return;
+                }
+
+
                 int myArrows = AllPlayerDataManager.Instance.GetArrowCount(OwnerClientId);
 
                 if (myArrows <= 0)

@@ -11,9 +11,6 @@ public class UIManager : MonoBehaviour
     public GameObject gameCanvas;
     public GameObject quitCanvas;
 
-    public Timer gameTimer;
-
-
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -22,26 +19,18 @@ public class UIManager : MonoBehaviour
 
     private void OnEnable()
     {
-        // StartGameAR 이벤트 구독
         StartGameAR.OnStartSharedSpaceHost += HandleHostSelected;
         StartGameAR.OnJoinSharedSpaceClient += HandleClientSelected;
         StartGameAR.OnEnterGameCanvas += HandleEnterGameCanvas;
         StartGameAR.OnStartGame += HandleGameStart;
-
-        if (gameTimer != null)
-        gameTimer.OnTimerEnd += HandleTimerEnd;
     }
 
     private void OnDisable()
     {
-        // 이벤트 해제
         StartGameAR.OnStartSharedSpaceHost -= HandleHostSelected;
         StartGameAR.OnJoinSharedSpaceClient -= HandleClientSelected;
         StartGameAR.OnEnterGameCanvas -= HandleEnterGameCanvas;
         StartGameAR.OnStartGame -= HandleGameStart;
-
-        if (gameTimer != null)
-        gameTimer.OnTimerEnd -= HandleTimerEnd;
     }
 
     void Start()
@@ -73,19 +62,13 @@ public class UIManager : MonoBehaviour
 
     private void HandleEnterGameCanvas()
     {
-        SetOnly(gameCanvas);  // UI 이동만
+        SetOnly(gameCanvas);
     }
-
 
     private void HandleGameStart()
     {
-        if (gameTimer != null)
-            gameTimer.StartTimer();
-    }
-
-    private void HandleTimerEnd()
-    {
-        ShowQuitCanvas();
+        // 게임 시작 시 UI에서 할 작업만 넣기
+        // 타이머 시작은 TimerStartButton → TimerManager 서버 RPC
     }
 
     public void ShowHost()
@@ -110,7 +93,7 @@ public class UIManager : MonoBehaviour
         hostCanvas.SetActive(false);
         clientCanvas.SetActive(false);
         gameCanvas.SetActive(false);
-        quitCanvas.SetActive(false); 
+        quitCanvas.SetActive(false);
 
         target.SetActive(true);
     }
