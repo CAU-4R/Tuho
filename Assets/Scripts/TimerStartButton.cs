@@ -9,6 +9,7 @@ public class TimerStartButton : MonoBehaviour
         if (NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer)
         {
             TimerManager.Instance.StartTimerServerRpc();
+            gameObject.SetActive(false); // 클릭 즉시 숨김
         }
         else
         {

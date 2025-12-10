@@ -7,6 +7,7 @@ public class GameBootstrap : MonoBehaviour
     public GameObject gameManagerPrefab;
     public GameObject playerDataPrefab; // 추가: PlayerData 프리팹 연결용 변수
     public GameObject timerManagerPrefab;
+    public GameObject rankingManagerPrefab;
 
     void Start()
     {
@@ -39,6 +40,13 @@ public class GameBootstrap : MonoBehaviour
             {
                 GameObject tm = Instantiate(timerManagerPrefab);
                 tm.GetComponent<NetworkObject>().Spawn();
+            }
+
+            // 4. RankingManager 생성
+            if (RankingManager.Instance == null)
+            {
+                GameObject rm = Instantiate(rankingManagerPrefab);
+                rm.GetComponent<NetworkObject>().Spawn();
             }
         }
     }
