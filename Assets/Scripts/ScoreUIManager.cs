@@ -73,7 +73,7 @@ public class ScoreUIManager : MonoBehaviour
         foreach (var item in sortedScores)
         {
             string myMark = (NetworkManager.Singleton != null && item.Key == NetworkManager.Singleton.LocalClientId) ? " (Me)" : "";
-            finalString += $"P{item.Key}{myMark}: {item.Value} pts\n";
+            finalString += $"P{item.Key+1}{myMark}: {item.Value} pts\n";
         }
 
         scoreText.text = finalString;

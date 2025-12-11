@@ -102,7 +102,7 @@ public class RankingManager : NetworkBehaviour
                 string colorTag = isMine ? "<color=yellow>" : "<color=white>";
                 string endColor = "</color>";
 
-                sb.AppendLine($"{colorTag}{currentRank}위 : Player {playerIds[i]} ({scores[i]}점){endColor}");
+                sb.AppendLine($"{colorTag}{currentRank}위 : Player {playerIds[i]+1} ({scores[i]}점){endColor}");
             }
             rankingText.text = sb.ToString();
         }
