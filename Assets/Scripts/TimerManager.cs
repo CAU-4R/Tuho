@@ -1,5 +1,5 @@
-using UnityEngine;
 using Unity.Netcode;
+using UnityEngine;
 using System.Collections;
 
 public class TimerManager : NetworkBehaviour
@@ -13,7 +13,6 @@ public class TimerManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        base.OnNetworkSpawn();
         Instance = this;
     }
 
@@ -23,7 +22,9 @@ public class TimerManager : NetworkBehaviour
     public NetworkVariable<int> countdown =
         new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
-    private bool isRunning = false;
+    // ★ 클라이언트도 읽을 수 있는 NetworkVariable
+    public NetworkVariable<bool> isTimerRunning =
+        new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     private IEnumerator StartCountdownThenTimer()
     {
@@ -39,43 +40,57 @@ public class TimerManager : NetworkBehaviour
         yield return new WaitForSeconds(1f);
         countdown.Value = 0;
 
-        isRunning = true;
+        isTimerRunning.Value = true;
     }
 
     void Update()
     {
-        if (!IsServer || !isRunning) return;
+        if (!IsServer) return;
 
-        if (timeValue.Value > 0)
+        if (isTimerRunning.Value && timeValue.Value > 0)
+        {
             timeValue.Value -= Time.deltaTime;
-        else
+        }
+        else if (timeValue.Value <= 0 && isTimerRunning.Value)
         {
             timeValue.Value = 0;
-            isRunning = false;
+            isTimerRunning.Value = false;
+
+            // OpenQuitCanvasClientRpc();
+
+            // 시간이 다 되면 게임 종료 처리
+            FinishGame();
+        }
+    }
+
+    // 게임 종료 및 랭킹 산출 요청
+    private void FinishGame()
+    {
+        if (!IsServer) return;
+        Debug.Log("Game Over! Calculating Rankings...");
+        if (RankingManager.Instance != null)
+        {
+            RankingManager.Instance.CalculateAndShowRankings();
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void StartTimerServerRpc()
     {
-        Debug.Log("SERVER RPC RECEIVED - TIMER START");
-
         if (!IsServer) return;
-
-        StartTimer();
-    }
-
-    private void StartTimer()
-    {
-        Debug.Log("SERVER START TIMER");
 
         StopAllCoroutines();
         StartCoroutine(StartCountdownThenTimer());
     }
 
-    public void StartTimerButton()
+    [ClientRpc]
+    private void OpenQuitCanvasClientRpc()
     {
-        // 항상 RPC 보내도 OK
-        StartTimerServerRpc();
+        GameObject quitCanvas = GameObject.Find("QuitCanvas");
+
+        if (quitCanvas != null)
+            quitCanvas.SetActive(true);
+        else
+            Debug.LogWarning("QuitCanvas를 찾을 수 없습니다.");
     }
 }
