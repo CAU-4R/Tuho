@@ -5,24 +5,26 @@ public struct PlayerData : IEquatable<PlayerData>, INetworkSerializable
 {
     public ulong clientID;
     public int score;
-    public float lifePoints;
+    public int arrowCount;
 
-    public PlayerData(ulong clientID, int score, float lifePoints)
+    public PlayerData(ulong clientID, int score, int arrowCount)
     {
         this.clientID = clientID;
         this.score = score;
-        this.lifePoints = lifePoints;
+        this.arrowCount = arrowCount;
     }
 
     public bool Equals(PlayerData other)
     {
-        return clientID == other.clientID && score == other.score && lifePoints == other.lifePoints;
+        return clientID == other.clientID &&
+               score == other.score &&
+               arrowCount == other.arrowCount;
     }
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         serializer.SerializeValue(ref clientID);
         serializer.SerializeValue(ref score);
-        serializer.SerializeValue(ref lifePoints);
+        serializer.SerializeValue(ref arrowCount);
     }
 }

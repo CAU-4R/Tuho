@@ -1,8 +1,12 @@
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.Events;
 
 public class ScoreDetector : NetworkBehaviour
 {
+    [SerializeField]
+    private UnityEvent _onScored;
+    
     private void OnTriggerEnter(Collider other)
     {
         // 1. 충돌 판정은 반드시 서버에서만 수행 (중요!)
@@ -28,6 +32,8 @@ public class ScoreDetector : NetworkBehaviour
                 AllPlayerDataManager.Instance.IncreaseScore(ownerId, 1);
                 Debug.Log($"Player {ownerId} Scored!");
             }
+            
+            _onScored?.Invoke();
         }
     }
 }

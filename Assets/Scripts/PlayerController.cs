@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
@@ -34,7 +36,7 @@ public class PlayerController : NetworkBehaviour
 
     // 경고 UI
     private GameObject warningUI;
-    private const string WARNING_UI_NAME = "TooCloseText"; // Canvas에 있는 오브젝트 이름
+    private GameObject noArrowUI;
     private Transform potTransform; // 투호통 위치 캐싱
 
     public override void OnNetworkSpawn()
@@ -60,30 +62,36 @@ public class PlayerController : NetworkBehaviour
     }
 
     // UI 찾는 함수
+    // UI 찾는 함수
     private void FindWarningUI()
     {
-        // 1. 먼저 항상 켜져 있는 부모 'Canvas'를 찾습니다.
-        GameObject canvas = GameObject.Find("GameCanvas/TooCloseText");
+        GameObject canvas = GameObject.Find("Canvas");
 
         if (canvas != null)
         {
-            // 2. Canvas의 자식들 중에서 "TooCloseText"를 찾습니다.
-            // transform.Find는 꺼져 있는 자식도 찾을 수 있습니다.
-            Transform uiTransform = canvas.transform.Find(WARNING_UI_NAME);
-
+            // 1. 거리 경고 UI 찾기
+            Transform uiTransform = canvas.transform.Find("GameCanvas/TooCloseText");
             if (uiTransform != null)
             {
                 warningUI = uiTransform.gameObject;
                 warningUI.SetActive(false);
             }
+
+            // 2. 화살 소진 UI 찾기
+            Transform noArrowTransform = canvas.transform.Find("GameCanvas/NoArrowText");
+            if (noArrowTransform != null)
+            {
+                noArrowUI = noArrowTransform.gameObject;
+                noArrowUI.SetActive(false);
+            }
             else
             {
-                Debug.LogWarning($"[PlayerController] 'GameCanvas/TooCloseText' 경로를 찾을 수 없습니다. Hierarchy 구조와 철자를 확인하세요.");
+                Debug.LogWarning($"[PlayerController] 'GameCanvas/NoArrowText' 경로를 찾을 수 없습니다.");
             }
         }
         else
         {
-            Debug.LogWarning("[PlayerController] 'Canvas'를 찾을 수 없습니다. Hierarchy에 Canvas 오브젝트가 있는지 확인하세요.");
+            Debug.LogWarning("[PlayerController] 'Canvas'를 찾을 수 없습니다.");
         }
     }
 
@@ -94,6 +102,39 @@ public class PlayerController : NetworkBehaviour
 
         // 에디터/모바일 통합 입력 처리
         HandleCombinedInput();
+    }
+
+    // [수정됨] UI 감지 함수 강화
+    private bool IsPointerOverUIObject(Vector2 touchPos)
+    {
+        // 1. EventSystem 자체가 없으면 감지 불가
+        if (EventSystem.current == null) return false;
+
+        // 2. [가장 중요] 이미 EventSystem이 이번 프레임에 UI 상호작용(클릭 등)을 처리했는지 확인
+        // 버튼을 누르자마자 버튼이 사라지는 경우에도, 이 값은 true로 남아있을 확률이 높습니다.
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            Debug.Log("Blocked by EventSystem.current.IsPointerOverGameObject()");
+            return true;
+        }
+
+        // 터치 입력의 경우 ID로도 확인 (모바일 대응)
+        if (primaryTouch != null && primaryTouch.device.enabled && primaryTouch.press.isPressed)
+        {
+            // 터치 ID로 확인하는 로직은 Input System에서 까다로울 수 있으므로
+            // 아래의 수동 Raycast가 그 역할을 대신합니다.
+        }
+
+        // 3. 수동 Raycast (UI가 살아있는 경우 물리적 위치 체크)
+        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+        eventDataCurrentPosition.position = touchPos;
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+
+        // 디버깅용: 무엇이 감지되었는지 확인하고 싶다면 주석 해제
+        // if (results.Count > 0) Debug.Log($"Blocked by UI Raycast: {results[0].gameObject.name}");
+
+        return results.Count > 0;
     }
 
     private void HandleCombinedInput()
@@ -121,6 +162,14 @@ public class PlayerController : NetworkBehaviour
         // 1. 드래그 시작 (터치 또는 클릭 시작)
         if (wasPressed)
         {
+            // [수정] UI 위에서 눌렀다면 드래그 시작 자체를 막음
+            if (IsPointerOverUIObject(inputPosition))
+            {
+                isDragging = false;
+                Debug.Log("Input Ignored: Touched UI");
+                return;
+            }
+
             dragStartPosition = inputPosition;
             isDragging = true;
         }
@@ -128,6 +177,12 @@ public class PlayerController : NetworkBehaviour
         // 2. 드래그 종료 (터치 또는 클릭 뗌)
         if (wasReleased && isDragging)
         {
+            if (IsPointerOverUIObject(inputPosition))
+            {
+                isDragging = false;
+                return;
+            }
+
             isDragging = false;
             Vector2 dragEndPosition = inputPosition;
 
@@ -136,26 +191,43 @@ public class PlayerController : NetworkBehaviour
 
             if (GameManager.Instance.isPotPlaced.Value)
             {
-                // 거리가 충분한지 먼저 체크하고, 통과하면 던짐
-                if (CheckDistanceToPot())
+                int myArrows = AllPlayerDataManager.Instance.GetArrowCount(OwnerClientId);
+
+                if (myArrows <= 0)
                 {
-                    HandleArrowThrow(dragEndPosition);
+                    Debug.Log("화살이 모두 소진되었습니다.");
+                    ShowNoArrowUI();
                 }
                 else
                 {
-                    Debug.Log("너무 가까워서 던질 수 없습니다");
-                    ShowWarningUI();
+                    if (CheckDistanceToPot())
+                    {
+                        HandleArrowThrow(dragEndPosition);
+                    }
+                    else
+                    {
+                        Debug.Log("너무 가까워서 던질 수 없습니다");
+                        ShowWarningUI();
+                    }
                 }
             }
             else
             {
                 if (Vector2.Distance(dragStartPosition, dragEndPosition) < 20.0f)
                 {
-                    HandlePotPlacement(inputPosition);
+                    // 호스트만 배치 가능
+                    if (IsServer)
+                    {
+                        HandlePotPlacement(inputPosition);
+                    }
+                    else
+                    {
+                        Debug.Log("투호통은 호스트만 배치할 수 있습니다.");
+                    }
                 }
                 else
                 {
-                    Debug.LogWarning("투호통이 아직 배치되지 않았는데 드래그(던지기)를 시도했습니다. 탭하여 투호통을 먼저 배치하세요.");
+                    Debug.LogWarning("투호통이 배치되지 않았습니다. 탭하여 배치하세요.");
                 }
             }
         }
@@ -189,10 +261,9 @@ public class PlayerController : NetworkBehaviour
         return distance >= minThrowDistance;
     }
 
-    // UI 표시 함수
+    // 거리 경고 UI 표시 함수
     private void ShowWarningUI()
     {
-        // 혹시 처음에 못 찾았을 수도 있으니 다시 확인
         if (warningUI == null) FindWarningUI();
 
         if (warningUI != null)
@@ -203,10 +274,29 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    // UI 숨기기 함수
+    // 거리 경고 UI 숨기기 함수
     private void HideWarningUI()
     {
         if (warningUI != null) warningUI.SetActive(false);
+    }
+
+    // 화살 없음 UI 표시 함수
+    private void ShowNoArrowUI()
+    {
+        if (noArrowUI == null) FindWarningUI();
+
+        if (noArrowUI != null)
+        {
+            noArrowUI.SetActive(true);
+            CancelInvoke(nameof(HideNoArrowUI));
+            Invoke(nameof(HideNoArrowUI), 1.5f);
+        }
+    }
+
+    // 화살 없음 UI 숨기기 함수
+    private void HideNoArrowUI()
+    {
+        if (noArrowUI != null) noArrowUI.SetActive(false);
     }
 
     private void HandlePotPlacement(Vector2 screenPosition)
@@ -234,8 +324,8 @@ public class PlayerController : NetworkBehaviour
         // float throwPower = Mathf.Clamp(dragLength * powerMultiplier, minThrowPower, maxThrowPower);
 
         // 2. 방향 계산:
-        // 기본 방향 = 카메라 정면 + 고정된 위쪽 방향 (포물선 보장)
-        Vector3 baseDirection = (mainCamera.transform.forward + (Vector3.up * baseUpwardAngle));
+        float forwardSign = Mathf.Sign(dragVector.y);
+        Vector3 baseDirection = (mainCamera.transform.forward * forwardSign) + (Vector3.up * baseUpwardAngle);
 
         // 좌우 오프셋 = 드래그의 X값으로 좌우 방향 조절
         Vector3 directionOffset = (mainCamera.transform.right * dragVector.x * horizontalSensitivity);
@@ -265,8 +355,7 @@ public class PlayerController : NetworkBehaviour
     [ServerRpc]
     private void RequestPotPlacementServerRpc(Vector3 position, Quaternion rotation)
     {
-        // 이 코드는 이제 서버(호스트)에서만 실행됩니다.
-        // 서버는 GameManager의 스폰 함수를 안전하게 호출할 수 있습니다.
+        if (!IsServer) return;
         GameManager.Instance.SpawnPot(position, rotation);
     }
 
@@ -276,6 +365,9 @@ public class PlayerController : NetworkBehaviour
     {
         // rpcParams.Receive.SenderClientId를 통해 누가 요청했는지 서버는 정확히 알 수 있습니다.
         ulong shooterId = rpcParams.Receive.SenderClientId;
+
+        // 서버에서 화살 개수 차감 요청
+        AllPlayerDataManager.Instance.DecreaseArrowCount(shooterId);
 
         // GameManager에게 쏜 사람(shooterId) 정보를 함께 전달합니다.
         GameManager.Instance.SpawnArrow(shooterId, position, rotation, force);

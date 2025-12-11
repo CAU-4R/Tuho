@@ -8,10 +8,10 @@ public class AllPlayerDataManager : NetworkBehaviour
     public static AllPlayerDataManager Instance;
 
     private NetworkList<PlayerData> allPlayerData;
-    private const int DEFAULT_LIFE = 3;
+    private const int DEFAULT_ARROWS = 20; // 기본 화살 개수 설정
 
     public event Action<ulong> OnPlayerScoreChanged;
-    public event Action<ulong> OnPlayerDead;
+    public event Action<ulong> OnPlayerArrowChanged;
 
     private void Awake()
     {
@@ -27,12 +27,22 @@ public class AllPlayerDataManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        allPlayerData.OnListChanged += HandleAllPlayerDataChanged;
+        NetworkManager.Singleton.OnClientConnectedCallback += AddNewClientToList;
+
         if (IsServer)
         {
             AddNewClientToList(NetworkManager.LocalClientId);
         }
-        allPlayerData.OnListChanged += HandleAllPlayerDataChanged;
-        NetworkManager.Singleton.OnClientConnectedCallback += AddNewClientToList;
+    }
+
+    public bool HasPlayer(ulong clientId)
+    {
+        foreach (var data in allPlayerData)
+        {
+            if (data.clientID == clientId) return true;
+        }
+        return false;
     }
 
     private void OnDisable()
@@ -40,14 +50,16 @@ public class AllPlayerDataManager : NetworkBehaviour
         if (NetworkManager.Singleton != null)
             NetworkManager.Singleton.OnClientConnectedCallback -= AddNewClientToList;
 
-        allPlayerData.OnListChanged -= HandleAllPlayerDataChanged;
+        if (allPlayerData != null)
+            allPlayerData.OnListChanged -= HandleAllPlayerDataChanged;
     }
 
 
     private void HandleAllPlayerDataChanged(NetworkListEvent<PlayerData> changeEvent)
     {
-        // 클라이언트 UI 갱신
+        // 점수 또는 화살 개수가 바뀌면 UI 갱신 알림
         OnPlayerScoreChanged?.Invoke(changeEvent.Value.clientID);
+        OnPlayerArrowChanged?.Invoke(changeEvent.Value.clientID);
     }
 
     private void AddNewClientToList(ulong clientID)
@@ -59,7 +71,8 @@ public class AllPlayerDataManager : NetworkBehaviour
             if (allPlayerData[i].clientID == clientID) return;
         }
 
-        PlayerData newPlayer = new PlayerData(clientID, 0, DEFAULT_LIFE);
+        // 초기 화살 개수 할당
+        PlayerData newPlayer = new PlayerData(clientID, 0, DEFAULT_ARROWS);
         allPlayerData.Add(newPlayer);
         PrintAllPlayerPlayerList();
     }
@@ -72,9 +85,43 @@ public class AllPlayerDataManager : NetworkBehaviour
         }
     }
 
-    // ---------------------------
-    // 추가된 부분 (ScoreDetector에서 호출)
-    // ---------------------------
+    // 화살 개수 감소 함수 (서버 전용)
+    public void DecreaseArrowCount(ulong clientId)
+    {
+        if (!IsServer) return;
+
+        for (int i = 0; i < allPlayerData.Count; i++)
+        {
+            if (allPlayerData[i].clientID == clientId)
+            {
+                var currentData = allPlayerData[i];
+                if (currentData.arrowCount > 0)
+                {
+                    PlayerData newData = new PlayerData(
+                        currentData.clientID,
+                        currentData.score,
+                        currentData.arrowCount - 1
+                    );
+                    allPlayerData[i] = newData;
+                }
+                break;
+            }
+        }
+    }
+
+    // 특정 클라이언트의 남은 화살 개수 반환 (클라이언트에서 사용 가능)
+    public int GetArrowCount(ulong clientId)
+    {
+        foreach (var data in allPlayerData)
+        {
+            if (data.clientID == clientId)
+            {
+                return data.arrowCount;
+            }
+        }
+        return 0;
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public void AddScoreServerRpc(ulong clientId, int amount)
     {
@@ -92,7 +139,7 @@ public class AllPlayerDataManager : NetworkBehaviour
                 PlayerData newData = new PlayerData(
                     allPlayerData[i].clientID,
                     allPlayerData[i].score + amount,
-                    allPlayerData[i].lifePoints
+                    allPlayerData[i].arrowCount
                 );
 
                 allPlayerData[i] = newData;

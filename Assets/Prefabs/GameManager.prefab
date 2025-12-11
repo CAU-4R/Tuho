@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3139194935
+  GlobalObjectIdHash: 1577327007
   InScenePlacedSourceGlobalObjectIdHash: 2634768071
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -68,7 +68,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73a3899aef9c5d5449c830fa3800c089, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tuhoPotPrefab: {fileID: 5154802245982363225, guid: 66b6fffdd7c8c8145b389121b6a3844b, type: 3}
-  tuhoArrowPrefab: {fileID: 6072995633629313607, guid: fbc87a68d964e954a895beb33e5dc5bc, type: 3}
+  tuhoPotPrefab: {fileID: 6565760597748725602, guid: db07528ed7c4204468b3e0037a675b5a, type: 3}
+  tuhoArrowPrefab: {fileID: 6532353689425910254, guid: 823169b5c9d1ffe4bb744734e0082be8, type: 3}
+  maxWindStrength: 5
+  windVelocity:
+    m_InternalValue: {x: 0, y: 0, z: 0}
   isPotPlaced:
     m_InternalValue: 0

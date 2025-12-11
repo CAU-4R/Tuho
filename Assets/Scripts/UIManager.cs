@@ -9,35 +9,66 @@ public class UIManager : MonoBehaviour
     public GameObject hostCanvas;
     public GameObject clientCanvas;
     public GameObject gameCanvas;
+    public GameObject quitCanvas;
 
-    void Awake()
+    private void Awake()
     {
-        // 싱글톤 설정
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }
 
-void Start()
-{
-    StartCoroutine(CoverageSequence());
-}
+    private void OnEnable()
+    {
+        StartGameAR.OnStartSharedSpaceHost += HandleHostSelected;
+        StartGameAR.OnJoinSharedSpaceClient += HandleClientSelected;
+        StartGameAR.OnEnterGameCanvas += HandleEnterGameCanvas;
+        StartGameAR.OnStartGame += HandleGameStart;
+    }
 
-private IEnumerator CoverageSequence()
-{
-    // 1) Coverage 켜기
-    SetOnly(coverageCanvas);
+    private void OnDisable()
+    {
+        StartGameAR.OnStartSharedSpaceHost -= HandleHostSelected;
+        StartGameAR.OnJoinSharedSpaceClient -= HandleClientSelected;
+        StartGameAR.OnEnterGameCanvas -= HandleEnterGameCanvas;
+        StartGameAR.OnStartGame -= HandleGameStart;
+    }
 
-    // 2) 5초 기다리기
-    yield return new WaitForSeconds(5f);
+    void Start()
+    {
+        StartCoroutine(CoverageSequence());
+    }
 
-    // 3) Start Canvas로 이동
-    ShowStart();
-}
-
+    private IEnumerator CoverageSequence()
+    {
+        SetOnly(coverageCanvas);
+        yield return new WaitForSeconds(5f);
+        ShowStart();
+    }
 
     public void ShowStart()
     {
         SetOnly(startCanvas);
+    }
+
+    private void HandleHostSelected()
+    {
+        ShowHost();
+    }
+
+    private void HandleClientSelected()
+    {
+        ShowClient();
+    }
+
+    private void HandleEnterGameCanvas()
+    {
+        SetOnly(gameCanvas);
+    }
+
+    private void HandleGameStart()
+    {
+        // 게임 시작 시 UI에서 할 작업만 넣기
+        // 타이머 시작은 TimerStartButton → TimerManager 서버 RPC
     }
 
     public void ShowHost()
@@ -50,12 +81,11 @@ private IEnumerator CoverageSequence()
         SetOnly(clientCanvas);
     }
 
-    public void ShowGame()
+    public void ShowQuitCanvas()
     {
-        SetOnly(gameCanvas);
+        SetOnly(quitCanvas);
     }
 
-    // 하나만 켜고 나머지는 모두 끄기
     private void SetOnly(GameObject target)
     {
         coverageCanvas.SetActive(false);
@@ -63,6 +93,7 @@ private IEnumerator CoverageSequence()
         hostCanvas.SetActive(false);
         clientCanvas.SetActive(false);
         gameCanvas.SetActive(false);
+        quitCanvas.SetActive(false);
 
         target.SetActive(true);
     }
