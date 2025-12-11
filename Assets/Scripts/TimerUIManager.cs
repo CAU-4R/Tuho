@@ -7,10 +7,10 @@ public class TimerUIManager : MonoBehaviour
     public TMP_Text timerText;
     public TMP_Text countdownText;
     public TimerManager timerManager;
-    
+
     private IEnumerator Start()
     {
-        while (TimerManager.Instance == null) 
+        while (TimerManager.Instance == null)
             yield return null;
 
         timerManager = TimerManager.Instance;
@@ -38,7 +38,7 @@ public class TimerUIManager : MonoBehaviour
 
         // main timer
         float t = timerManager.timeValue.Value;
-        timerText.text = $"{Mathf.Floor(t/60):00}:{Mathf.Floor(t%60):00}";
+        timerText.text = $"{Mathf.Floor(t / 60):00}:{Mathf.Floor(t % 60):00}";
 
         if (t <= 7f)
             timerText.color = Color.red;

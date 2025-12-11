@@ -17,7 +17,7 @@ public class TimerManager : NetworkBehaviour
     }
 
     public NetworkVariable<float> timeValue =
-        new NetworkVariable<float>(90f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        new NetworkVariable<float>(15f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     public NetworkVariable<int> countdown =
         new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -66,6 +66,7 @@ public class TimerManager : NetworkBehaviour
     // 게임 종료 및 랭킹 산출 요청
     private void FinishGame()
     {
+        if (!IsServer) return;
         Debug.Log("Game Over! Calculating Rankings...");
         if (RankingManager.Instance != null)
         {
