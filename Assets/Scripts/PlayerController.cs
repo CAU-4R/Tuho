@@ -104,21 +104,35 @@ public class PlayerController : NetworkBehaviour
         HandleCombinedInput();
     }
 
-    // UI 감지 함수
+    // [수정됨] UI 감지 함수 강화
     private bool IsPointerOverUIObject(Vector2 touchPos)
     {
+        // 1. EventSystem 자체가 없으면 감지 불가
         if (EventSystem.current == null) return false;
 
+        // 2. [가장 중요] 이미 EventSystem이 이번 프레임에 UI 상호작용(클릭 등)을 처리했는지 확인
+        // 버튼을 누르자마자 버튼이 사라지는 경우에도, 이 값은 true로 남아있을 확률이 높습니다.
         if (EventSystem.current.IsPointerOverGameObject())
         {
             Debug.Log("Blocked by EventSystem.current.IsPointerOverGameObject()");
             return true;
         }
 
+        // 터치 입력의 경우 ID로도 확인 (모바일 대응)
+        if (primaryTouch != null && primaryTouch.device.enabled && primaryTouch.press.isPressed)
+        {
+            // 터치 ID로 확인하는 로직은 Input System에서 까다로울 수 있으므로
+            // 아래의 수동 Raycast가 그 역할을 대신합니다.
+        }
+
+        // 3. 수동 Raycast (UI가 살아있는 경우 물리적 위치 체크)
         PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
         eventDataCurrentPosition.position = touchPos;
         List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+
+        // 디버깅용: 무엇이 감지되었는지 확인하고 싶다면 주석 해제
+        // if (results.Count > 0) Debug.Log($"Blocked by UI Raycast: {results[0].gameObject.name}");
 
         return results.Count > 0;
     }
@@ -148,7 +162,7 @@ public class PlayerController : NetworkBehaviour
         // 1. 드래그 시작 (터치 또는 클릭 시작)
         if (wasPressed)
         {
-            // UI 위에서 눌렀다면 드래그 시작 자체를 막음
+            // [수정] UI 위에서 눌렀다면 드래그 시작 자체를 막음
             if (IsPointerOverUIObject(inputPosition))
             {
                 isDragging = false;
@@ -177,13 +191,6 @@ public class PlayerController : NetworkBehaviour
 
             if (GameManager.Instance.isPotPlaced.Value)
             {
-                if (!TimerManager.Instance.isTimerRunning.Value)
-                {
-                    Debug.Log("타이머가 진행 중이 아니라서 화살을 던질 수 없습니다.");
-                    return;
-                }
-
-
                 int myArrows = AllPlayerDataManager.Instance.GetArrowCount(OwnerClientId);
 
                 if (myArrows <= 0)
