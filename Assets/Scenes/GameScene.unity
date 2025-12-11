@@ -6560,7 +6560,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timerText: {fileID: 1807969690}
   countdownText: {fileID: 972580466}
-  timerManager: {fileID: 3453290628640825359, guid: e8db4ee2395d7455ca7b21c2010ad276, type: 3}
+  timerManager: {fileID: 8438384079538523927, guid: e8db4ee2395d7455ca7b21c2010ad276, type: 3}
 --- !u!1 &1414387212
 GameObject:
   m_ObjectHideFlags: 0
